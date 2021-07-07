@@ -613,6 +613,80 @@ func TestNetworkChaosListChaos(t *testing.T) {
 	chaos.ListChaos()
 }
 
+func TestPhysicMachineChaosIsDeleted(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	chaos := &PhysicMachineChaos{}
+	err := faker.FakeData(chaos)
+
+	g.Expect(err).To(BeNil())
+
+	chaos.IsDeleted()
+}
+
+func TestPhysicMachineChaosIsIsPaused(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	chaos := &PhysicMachineChaos{}
+	err := faker.FakeData(chaos)
+
+	g.Expect(err).To(BeNil())
+
+	chaos.IsPaused()
+}
+
+func TestPhysicMachineChaosGetDuration(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	chaos := &PhysicMachineChaos{}
+	err := faker.FakeData(chaos)
+
+	g.Expect(err).To(BeNil())
+
+	chaos.Spec.GetDuration()
+}
+
+func TestPhysicMachineChaosGetChaos(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	chaos := &PhysicMachineChaos{}
+	err := faker.FakeData(chaos)
+
+	g.Expect(err).To(BeNil())
+
+	chaos.GetChaos()
+}
+
+func TestPhysicMachineChaosGetStatus(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	chaos := &PhysicMachineChaos{}
+	err := faker.FakeData(chaos)
+
+	g.Expect(err).To(BeNil())
+
+	chaos.GetStatus()
+}
+
+func TestPhysicMachineChaosGetSpecAndMetaString(t *testing.T) {
+	g := NewGomegaWithT(t)
+	chaos := &PhysicMachineChaos{}
+	err := faker.FakeData(chaos)
+	g.Expect(err).To(BeNil())
+	chaos.GetSpecAndMetaString()
+}
+
+func TestPhysicMachineChaosListChaos(t *testing.T) {
+	g := NewGomegaWithT(t)
+
+	chaos := &PhysicMachineChaosList{}
+	err := faker.FakeData(chaos)
+
+	g.Expect(err).To(BeNil())
+
+	chaos.ListChaos()
+}
+
 func TestPodChaosIsDeleted(t *testing.T) {
 	g := NewGomegaWithT(t)
 

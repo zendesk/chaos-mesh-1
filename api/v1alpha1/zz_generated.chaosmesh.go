@@ -973,6 +973,124 @@ func (in *NetworkChaos) IsOneShot() bool {
 	
 }
 
+const KindPhysicMachineChaos = "PhysicMachineChaos"
+
+// IsDeleted returns whether this resource has been deleted
+func (in *PhysicMachineChaos) IsDeleted() bool {
+	return !in.DeletionTimestamp.IsZero()
+}
+
+// IsPaused returns whether this resource has been paused
+func (in *PhysicMachineChaos) IsPaused() bool {
+	if in.Annotations == nil || in.Annotations[PauseAnnotationKey] != "true" {
+		return false
+	}
+	return true
+}
+
+// GetObjectMeta would return the ObjectMeta for chaos
+func (in *PhysicMachineChaos) GetObjectMeta() *metav1.ObjectMeta {
+	return &in.ObjectMeta
+}
+
+// GetDuration would return the duration for chaos
+func (in *PhysicMachineChaosSpec) GetDuration() (*time.Duration, error) {
+	if in.Duration == nil {
+		return nil, nil
+	}
+	duration, err := time.ParseDuration(*in.Duration)
+	if err != nil {
+		return nil, err
+	}
+	return &duration, nil
+}
+
+// GetChaos would return the a record for chaos
+func (in *PhysicMachineChaos) GetChaos() *ChaosInstance {
+	instance := &ChaosInstance{
+		Name:      in.Name,
+		Namespace: in.Namespace,
+		Kind:      KindPhysicMachineChaos,
+		StartTime: in.CreationTimestamp.Time,
+		Action:    "",
+		UID:       string(in.UID),
+		Status:    in.Status.ChaosStatus,
+	}
+
+	action := reflect.ValueOf(in).Elem().FieldByName("Spec").FieldByName("Action")
+	if action.IsValid() {
+		instance.Action = action.String()
+	}
+	if in.Spec.Duration != nil {
+		instance.Duration = *in.Spec.Duration
+	}
+	if in.DeletionTimestamp != nil {
+		instance.EndTime = in.DeletionTimestamp.Time
+	}
+	return instance
+}
+
+// GetStatus returns the status
+func (in *PhysicMachineChaos) GetStatus() *ChaosStatus {
+	return &in.Status.ChaosStatus
+}
+
+// GetSpecAndMetaString returns a string including the meta and spec field of this chaos object.
+func (in *PhysicMachineChaos) GetSpecAndMetaString() (string, error) {
+	spec, err := json.Marshal(in.Spec)
+	if err != nil {
+		return "", err
+	}
+
+	meta := in.ObjectMeta.DeepCopy()
+	meta.SetResourceVersion("")
+	meta.SetGeneration(0)
+
+	return string(spec) + meta.String(), nil
+}
+
+// +kubebuilder:object:root=true
+
+// PhysicMachineChaosList contains a list of PhysicMachineChaos
+type PhysicMachineChaosList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty"`
+	Items           []PhysicMachineChaos `json:"items"`
+}
+
+// ListChaos returns a list of chaos
+func (in *PhysicMachineChaosList) ListChaos() []*ChaosInstance {
+	res := make([]*ChaosInstance, 0, len(in.Items))
+	for _, item := range in.Items {
+		res = append(res, item.GetChaos())
+	}
+	return res
+}
+
+func (in *PhysicMachineChaos) DurationExceeded(now time.Time) (bool, time.Duration, error) {
+	duration, err := in.Spec.GetDuration()
+	if err != nil {
+		return false, 0, err
+	}
+
+	if duration != nil {
+		stopTime := in.GetCreationTimestamp().Add(*duration)
+		if stopTime.Before(now) {
+			return true, 0, nil
+		}
+
+		return false, stopTime.Sub(now), nil
+	}
+
+	return false, 0, nil
+}
+
+func (in *PhysicMachineChaos) IsOneShot() bool {
+	
+	return false
+	
+}
+
 const KindPodChaos = "PodChaos"
 
 // IsDeleted returns whether this resource has been deleted
@@ -1381,6 +1499,12 @@ func init() {
 		ChaosList: &NetworkChaosList{},
 	})
 
+	SchemeBuilder.Register(&PhysicMachineChaos{}, &PhysicMachineChaosList{})
+	all.register(KindPhysicMachineChaos, &ChaosKind{
+		Chaos:     &PhysicMachineChaos{},
+		ChaosList: &PhysicMachineChaosList{},
+	})
+
 	SchemeBuilder.Register(&PodChaos{}, &PodChaosList{})
 	all.register(KindPodChaos, &ChaosKind{
 		Chaos:     &PodChaos{},
@@ -1438,6 +1562,11 @@ func init() {
 	allScheduleItem.register(KindNetworkChaos, &ChaosKind{
 		Chaos:     &NetworkChaos{},
 		ChaosList: &NetworkChaosList{},
+	})
+
+	allScheduleItem.register(KindPhysicMachineChaos, &ChaosKind{
+		Chaos:     &PhysicMachineChaos{},
+		ChaosList: &PhysicMachineChaosList{},
 	})
 
 	allScheduleItem.register(KindPodChaos, &ChaosKind{

@@ -30,6 +30,7 @@ const (
 	ScheduleTypeJVMChaos ScheduleTemplateType = "JVMChaos"
 	ScheduleTypeKernelChaos ScheduleTemplateType = "KernelChaos"
 	ScheduleTypeNetworkChaos ScheduleTemplateType = "NetworkChaos"
+	ScheduleTypePhysicMachineChaos ScheduleTemplateType = "PhysicMachineChaos"
 	ScheduleTypePodChaos ScheduleTemplateType = "PodChaos"
 	ScheduleTypeStressChaos ScheduleTemplateType = "StressChaos"
 	ScheduleTypeTimeChaos ScheduleTemplateType = "TimeChaos"
@@ -46,6 +47,7 @@ var allScheduleTemplateType = []ScheduleTemplateType{
 	ScheduleTypeJVMChaos,
 	ScheduleTypeKernelChaos,
 	ScheduleTypeNetworkChaos,
+	ScheduleTypePhysicMachineChaos,
 	ScheduleTypePodChaos,
 	ScheduleTypeStressChaos,
 	ScheduleTypeTimeChaos,
@@ -87,6 +89,10 @@ func (it *ScheduleItem) SpawnNewObject(templateType ScheduleTemplateType) (runti
 	case ScheduleTypeNetworkChaos:
 		result := NetworkChaos{}
 		result.Spec = *it.NetworkChaos
+		return &result, result.GetObjectMeta(), nil
+	case ScheduleTypePhysicMachineChaos:
+		result := PhysicMachineChaos{}
+		result.Spec = *it.PhysicMachineChaos
 		return &result, result.GetObjectMeta(), nil
 	case ScheduleTypePodChaos:
 		result := PodChaos{}

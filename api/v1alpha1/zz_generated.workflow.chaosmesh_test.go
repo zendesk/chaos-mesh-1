@@ -83,6 +83,14 @@ func TestChaosKindMapShouldContainsNetworkChaos(t *testing.T) {
 	_, ok := all.kinds[string(requiredType)]
 	g.Expect(ok).To(Equal(true), "all kinds map should contains this type", requiredType)
 }
+func TestChaosKindMapShouldContainsPhysicMachineChaos(t *testing.T) {
+	g := NewGomegaWithT(t)
+	var requiredType TemplateType
+	requiredType = TypePhysicMachineChaos
+
+	_, ok := all.kinds[string(requiredType)]
+	g.Expect(ok).To(Equal(true), "all kinds map should contains this type", requiredType)
+}
 func TestChaosKindMapShouldContainsPodChaos(t *testing.T) {
 	g := NewGomegaWithT(t)
 	var requiredType TemplateType
