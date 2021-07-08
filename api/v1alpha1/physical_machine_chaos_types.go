@@ -20,24 +20,24 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// PhysicMachineChaosAction represents the chaos action about DNS.
-type PhysicMachineChaosAction string
+// PhysicalMachineChaosAction represents the chaos action about physical machine.
+type PhysicalMachineChaosAction string
 
 const (
 	// StressAction represents generates stress on the physical machine.
-	StressAction PhysicMachineChaosAction = "stress"
+	StressAction PhysicalMachineChaosAction = "stress"
 
 	// NetworkAction represents inject fault into network on the physical machine.
-	NetworkAction PhysicMachineChaosAction = "network"
+	NetworkAction PhysicalMachineChaosAction = "network"
 
 	// DiskAction represents attack the disk on the physical machine.
-	DiskAction PhysicMachineChaosAction = "disk"
+	DiskAction PhysicalMachineChaosAction = "disk"
 
 	// HostAction represents attack the host.
-	HostAction PhysicMachineChaosAction = "host"
+	HostAction PhysicalMachineChaosAction = "host"
 
 	// ProcessAction represents attack the process on the physical machine.
-	ProcessAction PhysicMachineChaosAction = "process"
+	ProcessAction PhysicalMachineChaosAction = "process"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -46,47 +46,48 @@ const (
 // +kubebuilder:object:root=true
 // +chaos-mesh:base
 
-// PhysicMachineChaos is the Schema for the networkchaos API
-type PhysicMachineChaos struct {
+// PhysicalMachineChaos is the Schema for the networkchaos API
+type PhysicalMachineChaos struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	// Spec defines the behavior of a pod chaos experiment
-	Spec PhysicMachineChaosSpec `json:"spec"`
+	Spec PhysicalMachineChaosSpec `json:"spec"`
 
 	// +optional
 	// Most recently observed status of the chaos experiment about pods
-	Status PhysicMachineChaosStatus `json:"status"`
+	Status PhysicalMachineChaosStatus `json:"status"`
 }
 
-// PhysicMachineChaosSpec defines the desired state of PhysicMachineChaos
-type PhysicMachineChaosSpec struct {
+// PhysicalMachineChaosSpec defines the desired state of PhysicalMachineChaos
+type PhysicalMachineChaosSpec struct {
 	// +kubebuilder:validation:Enum=stress;network;disk;host;process
-	Action PhysicMachineChaosAction `json:"action"`
+	Action PhysicalMachineChaosAction `json:"action"`
 
-	PhysicMachineSelector `json:",inline"`
+	PhysicalMachineSelector `json:",inline"`
 
 	ExpInfo string `json:"expInfo"`
 
 	// Duration represents the duration of the chaos action
+	// +optional
 	Duration *string `json:"duration,omitempty"`
 }
 
-// PhysicMachineChaosStatus defines the observed state of PhysicMachineChaos
-type PhysicMachineChaosStatus struct {
+// PhysicalMachineChaosStatus defines the observed state of PhysicalMachineChaos
+type PhysicalMachineChaosStatus struct {
 	ChaosStatus `json:",inline"`
 }
 
-func (obj *PhysicMachineChaos) GetSelectorSpecs() map[string]interface{} {
+func (obj *PhysicalMachineChaos) GetSelectorSpecs() map[string]interface{} {
 	return map[string]interface{}{
-		".": &obj.Spec.PhysicMachineSelector,
+		".": &obj.Spec.PhysicalMachineSelector,
 	}
 }
 
-type PhysicMachineSelector struct {
+type PhysicalMachineSelector struct {
 	Address string `json:"address"`
 }
 
-func (selector *PhysicMachineSelector) Id() string {
+func (selector *PhysicalMachineSelector) Id() string {
 	return selector.Address
 }

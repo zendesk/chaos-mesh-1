@@ -973,15 +973,15 @@ func (in *NetworkChaos) IsOneShot() bool {
 	
 }
 
-const KindPhysicMachineChaos = "PhysicMachineChaos"
+const KindPhysicalMachineChaos = "PhysicalMachineChaos"
 
 // IsDeleted returns whether this resource has been deleted
-func (in *PhysicMachineChaos) IsDeleted() bool {
+func (in *PhysicalMachineChaos) IsDeleted() bool {
 	return !in.DeletionTimestamp.IsZero()
 }
 
 // IsPaused returns whether this resource has been paused
-func (in *PhysicMachineChaos) IsPaused() bool {
+func (in *PhysicalMachineChaos) IsPaused() bool {
 	if in.Annotations == nil || in.Annotations[PauseAnnotationKey] != "true" {
 		return false
 	}
@@ -989,12 +989,12 @@ func (in *PhysicMachineChaos) IsPaused() bool {
 }
 
 // GetObjectMeta would return the ObjectMeta for chaos
-func (in *PhysicMachineChaos) GetObjectMeta() *metav1.ObjectMeta {
+func (in *PhysicalMachineChaos) GetObjectMeta() *metav1.ObjectMeta {
 	return &in.ObjectMeta
 }
 
 // GetDuration would return the duration for chaos
-func (in *PhysicMachineChaosSpec) GetDuration() (*time.Duration, error) {
+func (in *PhysicalMachineChaosSpec) GetDuration() (*time.Duration, error) {
 	if in.Duration == nil {
 		return nil, nil
 	}
@@ -1006,11 +1006,11 @@ func (in *PhysicMachineChaosSpec) GetDuration() (*time.Duration, error) {
 }
 
 // GetChaos would return the a record for chaos
-func (in *PhysicMachineChaos) GetChaos() *ChaosInstance {
+func (in *PhysicalMachineChaos) GetChaos() *ChaosInstance {
 	instance := &ChaosInstance{
 		Name:      in.Name,
 		Namespace: in.Namespace,
-		Kind:      KindPhysicMachineChaos,
+		Kind:      KindPhysicalMachineChaos,
 		StartTime: in.CreationTimestamp.Time,
 		Action:    "",
 		UID:       string(in.UID),
@@ -1031,12 +1031,12 @@ func (in *PhysicMachineChaos) GetChaos() *ChaosInstance {
 }
 
 // GetStatus returns the status
-func (in *PhysicMachineChaos) GetStatus() *ChaosStatus {
+func (in *PhysicalMachineChaos) GetStatus() *ChaosStatus {
 	return &in.Status.ChaosStatus
 }
 
 // GetSpecAndMetaString returns a string including the meta and spec field of this chaos object.
-func (in *PhysicMachineChaos) GetSpecAndMetaString() (string, error) {
+func (in *PhysicalMachineChaos) GetSpecAndMetaString() (string, error) {
 	spec, err := json.Marshal(in.Spec)
 	if err != nil {
 		return "", err
@@ -1051,15 +1051,15 @@ func (in *PhysicMachineChaos) GetSpecAndMetaString() (string, error) {
 
 // +kubebuilder:object:root=true
 
-// PhysicMachineChaosList contains a list of PhysicMachineChaos
-type PhysicMachineChaosList struct {
+// PhysicalMachineChaosList contains a list of PhysicalMachineChaos
+type PhysicalMachineChaosList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []PhysicMachineChaos `json:"items"`
+	Items           []PhysicalMachineChaos `json:"items"`
 }
 
 // ListChaos returns a list of chaos
-func (in *PhysicMachineChaosList) ListChaos() []*ChaosInstance {
+func (in *PhysicalMachineChaosList) ListChaos() []*ChaosInstance {
 	res := make([]*ChaosInstance, 0, len(in.Items))
 	for _, item := range in.Items {
 		res = append(res, item.GetChaos())
@@ -1067,7 +1067,7 @@ func (in *PhysicMachineChaosList) ListChaos() []*ChaosInstance {
 	return res
 }
 
-func (in *PhysicMachineChaos) DurationExceeded(now time.Time) (bool, time.Duration, error) {
+func (in *PhysicalMachineChaos) DurationExceeded(now time.Time) (bool, time.Duration, error) {
 	duration, err := in.Spec.GetDuration()
 	if err != nil {
 		return false, 0, err
@@ -1085,7 +1085,7 @@ func (in *PhysicMachineChaos) DurationExceeded(now time.Time) (bool, time.Durati
 	return false, 0, nil
 }
 
-func (in *PhysicMachineChaos) IsOneShot() bool {
+func (in *PhysicalMachineChaos) IsOneShot() bool {
 	
 	return false
 	
@@ -1499,10 +1499,10 @@ func init() {
 		ChaosList: &NetworkChaosList{},
 	})
 
-	SchemeBuilder.Register(&PhysicMachineChaos{}, &PhysicMachineChaosList{})
-	all.register(KindPhysicMachineChaos, &ChaosKind{
-		Chaos:     &PhysicMachineChaos{},
-		ChaosList: &PhysicMachineChaosList{},
+	SchemeBuilder.Register(&PhysicalMachineChaos{}, &PhysicalMachineChaosList{})
+	all.register(KindPhysicalMachineChaos, &ChaosKind{
+		Chaos:     &PhysicalMachineChaos{},
+		ChaosList: &PhysicalMachineChaosList{},
 	})
 
 	SchemeBuilder.Register(&PodChaos{}, &PodChaosList{})
@@ -1564,9 +1564,9 @@ func init() {
 		ChaosList: &NetworkChaosList{},
 	})
 
-	allScheduleItem.register(KindPhysicMachineChaos, &ChaosKind{
-		Chaos:     &PhysicMachineChaos{},
-		ChaosList: &PhysicMachineChaosList{},
+	allScheduleItem.register(KindPhysicalMachineChaos, &ChaosKind{
+		Chaos:     &PhysicalMachineChaos{},
+		ChaosList: &PhysicalMachineChaosList{},
 	})
 
 	allScheduleItem.register(KindPodChaos, &ChaosKind{

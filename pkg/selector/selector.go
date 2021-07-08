@@ -68,7 +68,7 @@ type SelectorParams struct {
 	ContainerSelector     *container.SelectImpl
 	AwsSelector           *aws.SelectImpl
 	GcpSelector           *gcp.SelectImpl
-	PhysicMachineSelector *physicalmachine.SelectImpl
+	PhysicalMachineSelector *physicalmachine.SelectImpl
 }
 
 func New(p SelectorParams) *Selector {

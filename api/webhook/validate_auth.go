@@ -34,7 +34,8 @@ var alwaysAllowedKind = []string{
 	v1alpha1.KindPodIOChaos,
 	v1alpha1.KindGcpChaos,
 	v1alpha1.KindPodHttpChaos,
-	// TODO
+	// TODO: add auth for physical machine chaos
+	//v1alpha1.KindPhysicalMachineChaos,
 
 	// TODO: check the auth for Schedule
 	// The resouce will be created by the SA of controller-manager, so checking the auth of Schedule is needed.

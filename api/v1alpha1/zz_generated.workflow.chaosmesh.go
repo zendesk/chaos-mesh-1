@@ -30,7 +30,7 @@ const (
 	TypeJVMChaos TemplateType = "JVMChaos"
 	TypeKernelChaos TemplateType = "KernelChaos"
 	TypeNetworkChaos TemplateType = "NetworkChaos"
-	TypePhysicMachineChaos TemplateType = "PhysicMachineChaos"
+	TypePhysicalMachineChaos TemplateType = "PhysicalMachineChaos"
 	TypePodChaos TemplateType = "PodChaos"
 	TypeStressChaos TemplateType = "StressChaos"
 	TypeTimeChaos TemplateType = "TimeChaos"
@@ -47,7 +47,7 @@ var allChaosTemplateType = []TemplateType{
 	TypeJVMChaos,
 	TypeKernelChaos,
 	TypeNetworkChaos,
-	TypePhysicMachineChaos,
+	TypePhysicalMachineChaos,
 	TypePodChaos,
 	TypeStressChaos,
 	TypeTimeChaos,
@@ -72,7 +72,7 @@ type EmbedChaos struct {
 	// +optional
 	NetworkChaos *NetworkChaosSpec `json:"networkChaos,omitempty"`
 	// +optional
-	PhysicMachineChaos *PhysicMachineChaosSpec `json:"physicmachineChaos,omitempty"`
+	PhysicalMachineChaos *PhysicalMachineChaosSpec `json:"physicalmachineChaos,omitempty"`
 	// +optional
 	PodChaos *PodChaosSpec `json:"podChaos,omitempty"`
 	// +optional
@@ -117,9 +117,9 @@ func (it *EmbedChaos) SpawnNewObject(templateType TemplateType) (runtime.Object,
 		result := NetworkChaos{}
 		result.Spec = *it.NetworkChaos
 		return &result, result.GetObjectMeta(), nil
-	case TypePhysicMachineChaos:
-		result := PhysicMachineChaos{}
-		result.Spec = *it.PhysicMachineChaos
+	case TypePhysicalMachineChaos:
+		result := PhysicalMachineChaos{}
+		result.Spec = *it.PhysicalMachineChaos
 		return &result, result.GetObjectMeta(), nil
 	case TypePodChaos:
 		result := PodChaos{}
@@ -168,8 +168,8 @@ func (it *EmbedChaos) SpawnNewList(templateType TemplateType) (GenericChaosList,
 	case TypeNetworkChaos:
 		result := NetworkChaosList{}
 		return &result, nil
-	case TypePhysicMachineChaos:
-		result := PhysicMachineChaosList{}
+	case TypePhysicalMachineChaos:
+		result := PhysicalMachineChaosList{}
 		return &result, nil
 	case TypePodChaos:
 		result := PodChaosList{}
@@ -252,7 +252,7 @@ func (in *NetworkChaosList) GetItems() []GenericChaos {
 	}
 	return result
 }
-func (in *PhysicMachineChaosList) GetItems() []GenericChaos {
+func (in *PhysicalMachineChaosList) GetItems() []GenericChaos {
 	var result []GenericChaos
 	for _, item := range in.Items {
 		item := item

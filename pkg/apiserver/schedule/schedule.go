@@ -167,6 +167,7 @@ func (s *Service) createSchedule(c *gin.Context) {
 		v1alpha1.KindDNSChaos:     parseDNSChaos,
 		v1alpha1.KindAwsChaos:     parseAwsChaos,
 		v1alpha1.KindGcpChaos:     parseGcpChaos,
+		//v1alpha1.KindPhysicalMachineChaos: parsePhysicalMachineChaos,
 	}
 
 	f, ok := parseFuncs[exp.Target.Kind]

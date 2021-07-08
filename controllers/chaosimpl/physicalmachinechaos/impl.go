@@ -37,7 +37,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	impl.Log.Info("apply physical machine chaos")
 	address := records[index].Id
 
-	physicalMachinechaos := obj.(*v1alpha1.PhysicMachineChaos)
+	physicalMachinechaos := obj.(*v1alpha1.PhysicalMachineChaos)
 
 	url := fmt.Sprintf("%s/api/attack/%s", address, physicalMachinechaos.Spec.Action)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(physicalMachinechaos.Spec.ExpInfo)))
@@ -112,7 +112,7 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 func NewImpl(c client.Client, log logr.Logger) *common.ChaosImplPair {
 	return &common.ChaosImplPair{
 		Name:   "physicalmachinechaos",
-		Object: &v1alpha1.PhysicMachineChaos{},
+		Object: &v1alpha1.PhysicalMachineChaos{},
 		Impl: &Impl{
 			Client: c,
 			Log:    log.WithName("physicalmachinechaos"),

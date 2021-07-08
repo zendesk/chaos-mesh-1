@@ -613,10 +613,10 @@ func TestNetworkChaosListChaos(t *testing.T) {
 	chaos.ListChaos()
 }
 
-func TestPhysicMachineChaosIsDeleted(t *testing.T) {
+func TestPhysicalMachineChaosIsDeleted(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	chaos := &PhysicMachineChaos{}
+	chaos := &PhysicalMachineChaos{}
 	err := faker.FakeData(chaos)
 
 	g.Expect(err).To(BeNil())
@@ -624,10 +624,10 @@ func TestPhysicMachineChaosIsDeleted(t *testing.T) {
 	chaos.IsDeleted()
 }
 
-func TestPhysicMachineChaosIsIsPaused(t *testing.T) {
+func TestPhysicalMachineChaosIsIsPaused(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	chaos := &PhysicMachineChaos{}
+	chaos := &PhysicalMachineChaos{}
 	err := faker.FakeData(chaos)
 
 	g.Expect(err).To(BeNil())
@@ -635,10 +635,10 @@ func TestPhysicMachineChaosIsIsPaused(t *testing.T) {
 	chaos.IsPaused()
 }
 
-func TestPhysicMachineChaosGetDuration(t *testing.T) {
+func TestPhysicalMachineChaosGetDuration(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	chaos := &PhysicMachineChaos{}
+	chaos := &PhysicalMachineChaos{}
 	err := faker.FakeData(chaos)
 
 	g.Expect(err).To(BeNil())
@@ -646,10 +646,10 @@ func TestPhysicMachineChaosGetDuration(t *testing.T) {
 	chaos.Spec.GetDuration()
 }
 
-func TestPhysicMachineChaosGetChaos(t *testing.T) {
+func TestPhysicalMachineChaosGetChaos(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	chaos := &PhysicMachineChaos{}
+	chaos := &PhysicalMachineChaos{}
 	err := faker.FakeData(chaos)
 
 	g.Expect(err).To(BeNil())
@@ -657,10 +657,10 @@ func TestPhysicMachineChaosGetChaos(t *testing.T) {
 	chaos.GetChaos()
 }
 
-func TestPhysicMachineChaosGetStatus(t *testing.T) {
+func TestPhysicalMachineChaosGetStatus(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	chaos := &PhysicMachineChaos{}
+	chaos := &PhysicalMachineChaos{}
 	err := faker.FakeData(chaos)
 
 	g.Expect(err).To(BeNil())
@@ -668,18 +668,18 @@ func TestPhysicMachineChaosGetStatus(t *testing.T) {
 	chaos.GetStatus()
 }
 
-func TestPhysicMachineChaosGetSpecAndMetaString(t *testing.T) {
+func TestPhysicalMachineChaosGetSpecAndMetaString(t *testing.T) {
 	g := NewGomegaWithT(t)
-	chaos := &PhysicMachineChaos{}
+	chaos := &PhysicalMachineChaos{}
 	err := faker.FakeData(chaos)
 	g.Expect(err).To(BeNil())
 	chaos.GetSpecAndMetaString()
 }
 
-func TestPhysicMachineChaosListChaos(t *testing.T) {
+func TestPhysicalMachineChaosListChaos(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	chaos := &PhysicMachineChaosList{}
+	chaos := &PhysicalMachineChaosList{}
 	err := faker.FakeData(chaos)
 
 	g.Expect(err).To(BeNil())

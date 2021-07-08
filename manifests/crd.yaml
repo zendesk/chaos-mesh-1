@@ -2,7 +2,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: awschaos.chaos-mesh.org
 spec:
@@ -134,7 +134,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: dnschaos.chaos-mesh.org
 spec:
@@ -370,7 +370,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: gcpchaos.chaos-mesh.org
 spec:
@@ -505,7 +505,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: httpchaos.chaos-mesh.org
 spec:
@@ -831,7 +831,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: iochaos.chaos-mesh.org
 spec:
@@ -1187,7 +1187,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: jvmchaos.chaos-mesh.org
 spec:
@@ -1446,7 +1446,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: kernelchaos.chaos-mesh.org
 spec:
@@ -1725,7 +1725,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: networkchaos.chaos-mesh.org
 spec:
@@ -2184,7 +2184,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: podchaos.chaos-mesh.org
 spec:
@@ -2424,7 +2424,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: podhttpchaos.chaos-mesh.org
 spec:
@@ -2638,7 +2638,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: podiochaos.chaos-mesh.org
 spec:
@@ -2852,7 +2852,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: podnetworkchaos.chaos-mesh.org
 spec:
@@ -3078,7 +3078,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: schedules.chaos-mesh.org
 spec:
@@ -4564,12 +4564,13 @@ spec:
                 - mode
                 - selector
                 type: object
-              physicmachineChaos:
-                description: PhysicMachineChaosSpec defines the desired state of PhysicMachineChaos
+              physicalmachineChaos:
+                description: PhysicalMachineChaosSpec defines the desired state of
+                  PhysicalMachineChaos
                 properties:
                   action:
-                    description: PhysicMachineChaosAction represents the chaos action
-                      about DNS.
+                    description: PhysicalMachineChaosAction represents the chaos action
+                      about physical machine.
                     enum:
                     - stress
                     - network
@@ -6668,13 +6669,13 @@ spec:
                           - mode
                           - selector
                           type: object
-                        physicmachineChaos:
-                          description: PhysicMachineChaosSpec defines the desired
-                            state of PhysicMachineChaos
+                        physicalmachineChaos:
+                          description: PhysicalMachineChaosSpec defines the desired
+                            state of PhysicalMachineChaos
                           properties:
                             action:
-                              description: PhysicMachineChaosAction represents the
-                                chaos action about DNS.
+                              description: PhysicalMachineChaosAction represents the
+                                chaos action about physical machine.
                               enum:
                               - stress
                               - network
@@ -8463,13 +8464,13 @@ spec:
                               - mode
                               - selector
                               type: object
-                            physicmachineChaos:
-                              description: PhysicMachineChaosSpec defines the desired
-                                state of PhysicMachineChaos
+                            physicalmachineChaos:
+                              description: PhysicalMachineChaosSpec defines the desired
+                                state of PhysicalMachineChaos
                               properties:
                                 action:
-                                  description: PhysicMachineChaosAction represents
-                                    the chaos action about DNS.
+                                  description: PhysicalMachineChaosAction represents
+                                    the chaos action about physical machine.
                                   enum:
                                   - stress
                                   - network
@@ -9848,6 +9849,7 @@ spec:
                                           to by services.
                                         type: string
                                       protocol:
+                                        default: TCP
                                         description: Protocol for port. Must be UDP,
                                           TCP, or SCTP. Defaults to "TCP".
                                         type: string
@@ -12045,7 +12047,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: stresschaos.chaos-mesh.org
 spec:
@@ -12334,7 +12336,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: timechaos.chaos-mesh.org
 spec:
@@ -12565,7 +12567,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: workflownodes.chaos-mesh.org
 spec:
@@ -14068,12 +14070,13 @@ spec:
                 - mode
                 - selector
                 type: object
-              physicmachineChaos:
-                description: PhysicMachineChaosSpec defines the desired state of PhysicMachineChaos
+              physicalmachineChaos:
+                description: PhysicalMachineChaosSpec defines the desired state of
+                  PhysicalMachineChaos
                 properties:
                   action:
-                    description: PhysicMachineChaosAction represents the chaos action
-                      about DNS.
+                    description: PhysicalMachineChaosAction represents the chaos action
+                      about physical machine.
                     enum:
                     - stress
                     - network
@@ -15737,13 +15740,13 @@ spec:
                     - mode
                     - selector
                     type: object
-                  physicmachineChaos:
-                    description: PhysicMachineChaosSpec defines the desired state
-                      of PhysicMachineChaos
+                  physicalmachineChaos:
+                    description: PhysicalMachineChaosSpec defines the desired state
+                      of PhysicalMachineChaos
                     properties:
                       action:
-                        description: PhysicMachineChaosAction represents the chaos
-                          action about DNS.
+                        description: PhysicalMachineChaosAction represents the chaos
+                          action about physical machine.
                         enum:
                         - stress
                         - network
@@ -17894,13 +17897,13 @@ spec:
                               - mode
                               - selector
                               type: object
-                            physicmachineChaos:
-                              description: PhysicMachineChaosSpec defines the desired
-                                state of PhysicMachineChaos
+                            physicalmachineChaos:
+                              description: PhysicalMachineChaosSpec defines the desired
+                                state of PhysicalMachineChaos
                               properties:
                                 action:
-                                  description: PhysicMachineChaosAction represents
-                                    the chaos action about DNS.
+                                  description: PhysicalMachineChaosAction represents
+                                    the chaos action about physical machine.
                                   enum:
                                   - stress
                                   - network
@@ -19748,13 +19751,13 @@ spec:
                                   - mode
                                   - selector
                                   type: object
-                                physicmachineChaos:
-                                  description: PhysicMachineChaosSpec defines the
-                                    desired state of PhysicMachineChaos
+                                physicalmachineChaos:
+                                  description: PhysicalMachineChaosSpec defines the
+                                    desired state of PhysicalMachineChaos
                                   properties:
                                     action:
-                                      description: PhysicMachineChaosAction represents
-                                        the chaos action about DNS.
+                                      description: PhysicalMachineChaosAction represents
+                                        the chaos action about physical machine.
                                       enum:
                                       - stress
                                       - network
@@ -21187,6 +21190,7 @@ spec:
                                               can be referred to by services.
                                             type: string
                                           protocol:
+                                            default: TCP
                                             description: Protocol for port. Must be
                                               UDP, TCP, or SCTP. Defaults to "TCP".
                                             type: string
@@ -24174,6 +24178,7 @@ spec:
                                 be referred to by services.
                               type: string
                             protocol:
+                              default: TCP
                               description: Protocol for port. Must be UDP, TCP, or
                                 SCTP. Defaults to "TCP".
                               type: string
@@ -26207,7 +26212,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   name: workflows.chaos-mesh.org
 spec:
@@ -27781,13 +27786,13 @@ spec:
                       - mode
                       - selector
                       type: object
-                    physicmachineChaos:
-                      description: PhysicMachineChaosSpec defines the desired state
-                        of PhysicMachineChaos
+                    physicalmachineChaos:
+                      description: PhysicalMachineChaosSpec defines the desired state
+                        of PhysicalMachineChaos
                       properties:
                         action:
-                          description: PhysicMachineChaosAction represents the chaos
-                            action about DNS.
+                          description: PhysicalMachineChaosAction represents the chaos
+                            action about physical machine.
                           enum:
                           - stress
                           - network
@@ -29529,13 +29534,13 @@ spec:
                           - mode
                           - selector
                           type: object
-                        physicmachineChaos:
-                          description: PhysicMachineChaosSpec defines the desired
-                            state of PhysicMachineChaos
+                        physicalmachineChaos:
+                          description: PhysicalMachineChaosSpec defines the desired
+                            state of PhysicalMachineChaos
                           properties:
                             action:
-                              description: PhysicMachineChaosAction represents the
-                                chaos action about DNS.
+                              description: PhysicalMachineChaosAction represents the
+                                chaos action about physical machine.
                               enum:
                               - stress
                               - network
@@ -30865,6 +30870,7 @@ spec:
                                       port that can be referred to by services.
                                     type: string
                                   protocol:
+                                    default: TCP
                                     description: Protocol for port. Must be UDP, TCP,
                                       or SCTP. Defaults to "TCP".
                                     type: string

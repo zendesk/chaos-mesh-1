@@ -21,8 +21,8 @@ import (
 
 type SelectImpl struct{}
 
-func (impl *SelectImpl) Select(ctx context.Context, physicMachineSelector *v1alpha1.PhysicMachineSelector) ([]*v1alpha1.PhysicMachineSelector, error) {
-	return []*v1alpha1.PhysicMachineSelector{physicMachineSelector}, nil
+func (impl *SelectImpl) Select(ctx context.Context, physicalMachineSelector *v1alpha1.PhysicalMachineSelector) ([]*v1alpha1.PhysicalMachineSelector, error) {
+	return []*v1alpha1.PhysicalMachineSelector{physicalMachineSelector}, nil
 }
 
 func New() *SelectImpl {
