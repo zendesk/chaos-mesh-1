@@ -34,6 +34,7 @@
   },
   "newE": {
     "title": "New experiment",
+    "titleStep0": "Choose environment",
     "titleStep1": "Choose a Target",
     "titleStep2": "Fill the experiment info",
     "steps": {
@@ -93,6 +94,9 @@
       },
       "gcp": {
         "title": "GCP Fault"
+      },
+      "physicalmachine": {
+        "title": "Physic Fault"
       }
     },
     "run": {
@@ -330,6 +334,7 @@
   "confirm": {
     "success": {
       "archive": "Archived successfully",
+      "add": "Added successfully",
       "create": "Created successfully",
       "delete": "Deleted successfully",
       "load": "Loaded successfully",
@@ -340,6 +345,7 @@
     }
   },
   "k8s": {
+    "title": "Kubernetes",
     "namespace": "Namespace",
     "labels": "Labels",
     "annotations": "Annotations",
@@ -347,5 +353,15 @@
     "labelSelectors": "Label Selectors",
     "annotationsSelectors": "Annotation Selectors",
     "phaseSelectors": "Phase Selectors"
+  },
+  "physic": {
+    "title": "Physic",
+    "select": "Select addresses",
+    "noAddress": "No address. Please add an address below and use it",
+    "add": "Add address",
+    "nameHelper": "The address' alias",
+    "address": "Address",
+    "addressHelper": "Physical machine chaosd address",
+    "manage": "Manage Addresses"
   }
 }

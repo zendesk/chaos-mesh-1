@@ -4,17 +4,29 @@ import { ReactComponent as DNSIcon } from 'images/chaos/dns.svg'
 import { ExperimentKind } from 'components/NewExperiment/types'
 import { ReactComponent as FileSystemIOIcon } from 'images/chaos/io.svg'
 import { ReactComponent as GCPIcon } from 'images/chaos/gcp.svg'
+import { ReactComponent as K8SIcon } from 'images/k8s.svg'
 import { ReactComponent as LinuxKernelIcon } from 'images/chaos/kernel.svg'
 import { ReactComponent as NetworkIcon } from 'images/chaos/network.svg'
+import { ReactComponent as PhysicIcon } from 'images/physic.svg'
 import { ReactComponent as PodLifecycleIcon } from 'images/chaos/pod.svg'
 import { ReactComponent as StressIcon } from 'images/chaos/stress.svg'
 import { SvgIcon } from '@material-ui/core'
 import T from 'components/T'
 
-export function iconByKind(kind: ExperimentKind | 'Schedule', size: 'small' | 'large' = 'large') {
+export function iconByKind(
+  kind: ExperimentKind | 'PhysicalMachineChaos' | 'Schedule' | 'k8s' | 'physic',
+  size: 'small' | 'large' = 'large'
+) {
   let icon
 
   switch (kind) {
+    case 'k8s':
+      icon = <K8SIcon />
+      break
+    case 'PhysicalMachineChaos':
+    case 'physic':
+      icon = <PhysicIcon />
+      break
     case 'PodChaos':
       icon = <PodLifecycleIcon />
       break
@@ -48,7 +60,7 @@ export function iconByKind(kind: ExperimentKind | 'Schedule', size: 'small' | 'l
   return <SvgIcon fontSize={size}>{icon}</SvgIcon>
 }
 
-export function transByKind(kind: ExperimentKind | 'Workflow' | 'Schedule') {
+export function transByKind(kind: ExperimentKind | 'PhysicalMachineChaos' | 'Workflow' | 'Schedule') {
   let id: string
 
   if (kind === 'Workflow') {

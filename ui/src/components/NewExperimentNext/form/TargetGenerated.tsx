@@ -1,4 +1,5 @@
 import { AutocompleteMultipleField, LabelField, SelectField, Submit, TextField } from 'components/FormField'
+import { Env, clearNetworkTargetPods } from 'slices/experiments'
 import { Form, Formik, FormikErrors, FormikTouched, getIn } from 'formik'
 import { Kind, Spec } from '../data/target'
 import { useEffect, useState } from 'react'
@@ -12,16 +13,16 @@ import Space from 'components-mui/Space'
 import T from 'components/T'
 import _snakecase from 'lodash.snakecase'
 import basicData from '../data/basic'
-import { clearNetworkTargetPods } from 'slices/experiments'
 
 interface TargetGeneratedProps {
+  env: Env
   kind?: Kind | ''
   data: Spec
-  validationSchema: ObjectSchema
+  validationSchema?: ObjectSchema
   onSubmit: (values: Record<string, any>) => void
 }
 
-const TargetGenerated: React.FC<TargetGeneratedProps> = ({ kind, data, validationSchema, onSubmit }) => {
+const TargetGenerated: React.FC<TargetGeneratedProps> = ({ env, kind, data, validationSchema, onSubmit }) => {
   const { namespaces, target } = useStoreSelector((state) => state.experiments)
   const dispatch = useStoreDispatch()
 
@@ -35,7 +36,7 @@ const TargetGenerated: React.FC<TargetGeneratedProps> = ({ kind, data, validatio
     return acc
   }, {} as Record<string, any>)
 
-  if (kind === 'NetworkChaos') {
+  if (env === 'k8s' && kind === 'NetworkChaos') {
     const action = initialValues.action
     delete initialValues.action
     const direction = initialValues.direction
@@ -70,7 +71,7 @@ const TargetGenerated: React.FC<TargetGeneratedProps> = ({ kind, data, validatio
     const rendered = Object.entries(data)
       .filter(([_, v]) => v && v instanceof Object && v.field)
       .map(([k, v]) => {
-        if (kind === 'NetworkChaos' && k !== 'direction' && k !== 'external_targets') {
+        if (env === 'k8s' && kind === 'NetworkChaos' && k !== 'direction' && k !== 'external_targets') {
           k = `${data.action}.${k}`
         }
 
@@ -105,6 +106,7 @@ const TargetGenerated: React.FC<TargetGeneratedProps> = ({ kind, data, validatio
                 name={k}
                 label={v.label}
                 helperText={getIn(touched, k) && getIn(errors, k) ? getIn(errors, k) : v.helperText}
+                value={v.value}
                 error={getIn(errors, k) && getIn(touched, k) ? true : false}
               >
                 {v.items!.map((option: string) => (
@@ -145,7 +147,7 @@ const TargetGenerated: React.FC<TargetGeneratedProps> = ({ kind, data, validatio
   }
 
   return (
-    <Formik enableReinitialize initialValues={init} validationSchema={validationSchema} onSubmit={onSubmit}>
+    <Formik enableReinitialize initialValues={init} validationSchema={validationSchema ?? null} onSubmit={onSubmit}>
       {({ values, setFieldValue, errors, touched }) => {
         const beforeTargetOpen = () => {
           if (!getIn(values, 'target_scope')) {
@@ -163,7 +165,7 @@ const TargetGenerated: React.FC<TargetGeneratedProps> = ({ kind, data, validatio
         return (
           <Form>
             <Space>{parseDataToFormFields(errors, touched)}</Space>
-            {kind === 'NetworkChaos' && (
+            {env === 'k8s' && kind === 'NetworkChaos' && (
               <AdvancedOptions
                 title={T('newE.target.network.target.title')}
                 beforeOpen={beforeTargetOpen}
