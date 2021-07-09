@@ -64,10 +64,10 @@ func (s *Selector) Select(ctx context.Context, spec interface{}) ([]Target, erro
 type SelectorParams struct {
 	fx.In
 
-	PodSelector           *pod.SelectImpl
-	ContainerSelector     *container.SelectImpl
-	AwsSelector           *aws.SelectImpl
-	GcpSelector           *gcp.SelectImpl
+	PodSelector             *pod.SelectImpl
+	ContainerSelector       *container.SelectImpl
+	AwsSelector             *aws.SelectImpl
+	GcpSelector             *gcp.SelectImpl
 	PhysicalMachineSelector *physicalmachine.SelectImpl
 }
 
