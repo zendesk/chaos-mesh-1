@@ -139,6 +139,7 @@ func (s *Service) applyExperiment(c *gin.Context) {
 	case "PhysicalMachineChaos":
 	default:
 		_ = c.Error(utils.ErrInvalidRequest.New(kind + " is not supported"))
+		return
 	}
 
 	payload := v1alpha1.PhysicalMachineChaos{}
