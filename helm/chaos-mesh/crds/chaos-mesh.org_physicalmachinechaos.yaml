@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
-  name: physicmachinechaos.chaos-mesh.org
+  name: physicalmachinechaos.chaos-mesh.org
 spec:
   group: chaos-mesh.org
   names:
-    kind: PhysicMachineChaos
-    listKind: PhysicMachineChaosList
-    plural: physicmachinechaos
-    singular: physicmachinechaos
+    kind: PhysicalMachineChaos
+    listKind: PhysicalMachineChaosList
+    plural: physicalmachinechaos
+    singular: physicalmachinechaos
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: PhysicMachineChaos is the Schema for the networkchaos API
+        description: PhysicalMachineChaos is the Schema for the networkchaos API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
@@ -33,7 +33,7 @@ spec:
             description: Spec defines the behavior of a pod chaos experiment
             properties:
               action:
-                description: PhysicMachineChaosAction represents the chaos action about physical machine.
+                description: PhysicalMachineChaosAction represents the chaos action about physical machine.
                 enum:
                 - stress
                 - network
@@ -47,6 +47,9 @@ spec:
                 description: Duration represents the duration of the chaos action
                 type: string
               expInfo:
+                type: string
+              uid:
+                description: the experiment ID
                 type: string
             required:
             - action
