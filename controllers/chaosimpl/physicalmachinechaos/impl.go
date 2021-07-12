@@ -17,6 +17,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -57,7 +58,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(expInfo))
 	if err != nil {
-		impl.Log.Error(err, "fail to generate http request")
+		impl.Log.Error(err, "fail to generate HTTP request")
 		return v1alpha1.NotInjected, err
 	}
 	req.Header.Set("X-Custom-Header", "myvalue")
@@ -66,17 +67,24 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		impl.Log.Error(err, "do http request")
+		impl.Log.Error(err, "do HTTP request")
 		return v1alpha1.NotInjected, err
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		impl.Log.Error(err, "read HTTP response body")
+		return v1alpha1.NotInjected, err
+	}
+	impl.Log.Info("HTTP response", "status", resp.Status, "body", string(body))
 
-	// TODO: get expid
+	if resp.StatusCode != http.StatusOK {
+		err = errors.New("HTTP status is not OK")
+		impl.Log.Error(err, "")
+		return v1alpha1.NotInjected, err
+	}
+
 	return v1alpha1.Injected, nil
 }
 
@@ -88,10 +96,10 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 
 	url := fmt.Sprintf("%s/api/attack/%s", address, physicalMachinechaos.Spec.UID)
 
-	req, err := http.NewRequest("DELELE", url, nil)
+	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
-		impl.Log.Error(err, "fail to generate http request")
-		return v1alpha1.NotInjected, err
+		impl.Log.Error(err, "fail to generate HTTP request")
+		return v1alpha1.Injected, err
 	}
 	req.Header.Set("X-Custom-Header", "myvalue")
 	req.Header.Set("Content-Type", "application/json")
@@ -100,59 +108,23 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	resp, err := client.Do(req)
 	if err != nil {
 		impl.Log.Error(err, "do http request")
-		return v1alpha1.NotInjected, err
+		return v1alpha1.Injected, err
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		impl.Log.Error(err, "read HTTP response body")
+		return v1alpha1.Injected, err
+	}
+	impl.Log.Info("HTTP response", "status", resp.Status, "body", string(body))
+	if resp.StatusCode != http.StatusOK {
+		err = errors.New("HTTP status is not OK")
+		impl.Log.Error(err, "")
+		return v1alpha1.Injected, err
+	}
 
-	// TODO: get expid
-	return v1alpha1.Injected, nil
-
-	/*
-		decodedContainer, err := impl.decoder.DecodeContainerRecord(ctx, records[index])
-		if decodedContainer.PbClient != nil {
-			defer decodedContainer.PbClient.Close()
-		}
-		if err != nil {
-			if utils.IsFailToGet(err) {
-				// pretend the disappeared container has been recovered
-				return v1alpha1.NotInjected, nil
-			}
-			return v1alpha1.Injected, err
-		}
-
-		dnschaos := obj.(*v1alpha1.DNSChaos)
-
-		// get dns server's ip used for chaos
-		service, err := pod.GetService(ctx, impl.Client, "", config.ControllerCfg.Namespace, config.ControllerCfg.DNSServiceName)
-		if err != nil {
-			impl.Log.Error(err, "fail to get service")
-			return v1alpha1.Injected, err
-		}
-		impl.Log.Info("Cancel DNS chaos to DNS service", "ip", service.Spec.ClusterIP)
-
-		err = impl.cancelDNSServerRules(service.Spec.ClusterIP, config.ControllerCfg.DNSServicePort, dnschaos.Name)
-		if err != nil {
-			impl.Log.Error(err, "fail to cancelDNSServerRules")
-			return v1alpha1.Injected, err
-		}
-
-		_, err = decodedContainer.PbClient.SetDNSServer(ctx, &pb.SetDNSServerRequest{
-			ContainerId: decodedContainer.ContainerId,
-			Enable:      false,
-			EnterNS:     true,
-		})
-		if err != nil {
-			impl.Log.Error(err, "recover pod for DNS chaos")
-			return v1alpha1.Injected, err
-		}
-	*/
-
-	return v1alpha1.Injected, nil
+	return v1alpha1.NotInjected, nil
 }
 
 func NewImpl(c client.Client, log logr.Logger) *common.ChaosImplPair {

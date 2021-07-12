@@ -361,6 +361,7 @@ webhook:
     - gcpchaos
     - dnschaos
     - jvmchaos
+    - physicalmachinechaos
     - schedule
     - workflow
 
