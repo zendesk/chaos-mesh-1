@@ -15,14 +15,17 @@ package clientpool
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"sync"
 
+	"github.com/gin-gonic/gin"
 	lru "github.com/hashicorp/golang-lru"
 	"k8s.io/apimachinery/pkg/runtime"
 	authorizationv1 "k8s.io/client-go/kubernetes/typed/authorization/v1"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 	pkgclient "sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/chaos-mesh/chaos-mesh/pkg/mock"
@@ -36,6 +39,8 @@ type Clients interface {
 	AuthClient(token string) (authorizationv1.AuthorizationV1Interface, error)
 	Num() int
 	Contains(token string) bool
+
+	KubeClient(name string, config []byte) (pkgclient.Client, error)
 }
 
 type LocalClient struct {
@@ -71,6 +76,10 @@ func (c *LocalClient) AuthClient(token string) (authorizationv1.AuthorizationV1I
 	return c.authClient, nil
 }
 
+func (c *LocalClient) KubeClient(name string, config []byte) (pkgclient.Client, error) {
+	return c.client, nil
+}
+
 // Num returns the num of clients
 func (c *LocalClient) Num() int {
 	return 1
@@ -89,6 +98,7 @@ type ClientsPool struct {
 	localConfig *rest.Config
 	clients     *lru.Cache
 	authClients *lru.Cache
+	kubeClients map[string]pkgclient.Client
 }
 
 // New creates a new Clients
@@ -103,11 +113,14 @@ func NewClientPool(localConfig *rest.Config, scheme *runtime.Scheme, maxClientNu
 		return nil, err
 	}
 
+	kubeClients := make(map[string]pkgclient.Client)
+
 	return &ClientsPool{
 		localConfig: localConfig,
 		scheme:      scheme,
 		clients:     clients,
 		authClients: authClients,
+		kubeClients: kubeClients,
 	}, nil
 }
 
@@ -174,6 +187,36 @@ func (c *ClientsPool) AuthClient(token string) (authorizationv1.AuthorizationV1I
 	return authCli, nil
 }
 
+// only set kubeConfig the first time
+func (c *ClientsPool) KubeClient(name string, kubeConfig []byte) (pkgclient.Client, error) {
+	c.Lock()
+	defer c.Unlock()
+
+	if client, ok := c.kubeClients[name]; ok {
+		return client, nil
+	}
+
+	if len(kubeConfig) == 0 {
+		return nil, fmt.Errorf("kube config is empty")
+	}
+
+	config, err := clientcmd.RESTConfigFromKubeConfig(kubeConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	client, err := pkgclient.New(config, pkgclient.Options{
+		Scheme: c.scheme,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	c.kubeClients[name] = client
+
+	return client, nil
+}
+
 // Num returns the num of clients
 func (c *ClientsPool) Num() int {
 	return c.clients.Len()
@@ -196,6 +239,12 @@ func ExtractTokenFromHeader(header http.Header) string {
 	}
 
 	return ""
+}
+
+// ExtractNameAndGetClient extracts name from http header, and get the k8s client
+func ExtractNameAndGetClient(c *gin.Context) (pkgclient.Client, error) {
+	name := c.Query("name")
+	return K8sClients.KubeClient(name, []byte{})
 }
 
 // ExtractTokenAndGetClient extracts token from http header, and get the k8s client of this token

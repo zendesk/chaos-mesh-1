@@ -16,6 +16,7 @@ package physicalmachinechaos
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -40,7 +41,21 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	physicalMachinechaos := obj.(*v1alpha1.PhysicalMachineChaos)
 
 	url := fmt.Sprintf("%s/api/attack/%s", address, physicalMachinechaos.Spec.Action)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(physicalMachinechaos.Spec.ExpInfo)))
+
+	var objmap map[string]interface{}
+	err := json.Unmarshal([]byte(physicalMachinechaos.Spec.ExpInfo), &objmap)
+	if err != nil {
+		impl.Log.Error(err, "fail to unmarshal experiment info")
+		return v1alpha1.NotInjected, err
+	}
+	objmap["uid"] = physicalMachinechaos.Spec.UID
+	expInfo, err := json.Marshal(objmap)
+	if err != nil {
+		impl.Log.Error(err, "fail to marshal experiment info")
+		return v1alpha1.NotInjected, err
+	}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(expInfo))
 	if err != nil {
 		impl.Log.Error(err, "fail to generate http request")
 		return v1alpha1.NotInjected, err
@@ -66,6 +81,37 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 }
 
 func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+	impl.Log.Info("recover physical machine chaos")
+	address := records[index].Id
+
+	physicalMachinechaos := obj.(*v1alpha1.PhysicalMachineChaos)
+
+	url := fmt.Sprintf("%s/api/attack/%s", address, physicalMachinechaos.Spec.UID)
+
+	req, err := http.NewRequest("DELELE", url, nil)
+	if err != nil {
+		impl.Log.Error(err, "fail to generate http request")
+		return v1alpha1.NotInjected, err
+	}
+	req.Header.Set("X-Custom-Header", "myvalue")
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		impl.Log.Error(err, "do http request")
+		return v1alpha1.NotInjected, err
+	}
+	defer resp.Body.Close()
+
+	fmt.Println("response Status:", resp.Status)
+	fmt.Println("response Headers:", resp.Header)
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println("response Body:", string(body))
+
+	// TODO: get expid
+	return v1alpha1.Injected, nil
+
 	/*
 		decodedContainer, err := impl.decoder.DecodeContainerRecord(ctx, records[index])
 		if decodedContainer.PbClient != nil {

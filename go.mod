@@ -11,8 +11,12 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.1.1
 	github.com/aws/aws-sdk-go-v2/credentials v1.1.1
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.5.0
+	github.com/aws/aws-sdk-go-v2/service/route53 v1.1.1 // indirect
+	github.com/btcsuite/btcd v0.20.1-beta // indirect
 	github.com/chaos-mesh/chaos-mesh/api/v1alpha1 v0.0.0
 	github.com/chaos-mesh/k8s_dns_chaos v0.2.0
+	github.com/cloudflare/cloudflare-go v0.14.0 // indirect
+	github.com/consensys/gurvy v0.3.8 // indirect
 	github.com/containerd/cgroups v0.0.0-20200404012852-53ba5634dc0f
 	github.com/containerd/containerd v1.2.3
 	github.com/containerd/continuity v0.0.0-20200107194136-26c1120b8d41 // indirect
@@ -22,8 +26,10 @@ require (
 	github.com/docker/docker v1.4.2-0.20180625184442-8e610b2b55bf
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-events v0.0.0-20190806004212-e31b211e4f1c // indirect
-	github.com/ethereum/go-ethereum v1.10.2
+	github.com/edsrzf/mmap-go v1.0.0 // indirect
+	github.com/ethereum/go-ethereum v1.9.25
 	github.com/fatih/color v1.9.0
+	github.com/fjl/memsize v0.0.0-20190710130421-bcb5799ab5e5 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.7.2
@@ -34,11 +40,16 @@ require (
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/mock v1.5.0
 	github.com/golang/protobuf v1.4.3
+	github.com/google/uuid v1.1.1 // indirect
 	github.com/gorilla/mux v1.7.0 // indirect
+	github.com/graph-gophers/graphql-go v0.0.0-20201113091052-beb923fada29 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
+	github.com/holiman/bloomfilter/v2 v2.0.3 // indirect
+	github.com/huin/goupnp v1.0.1-0.20210310174557-0ca763054c88 // indirect
 	github.com/iancoleman/strcase v0.1.3
+	github.com/influxdata/influxdb v1.8.3 // indirect
 	github.com/jinzhu/gorm v1.9.12
 	github.com/joomcode/errorx v1.0.1
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -58,6 +69,7 @@ require (
 	github.com/prometheus/procfs v0.6.0 // indirect
 	github.com/robfig/cron v1.1.0
 	github.com/robfig/cron/v3 v3.0.1
+	github.com/rs/cors v1.7.0 // indirect
 	github.com/shirou/gopsutil v2.20.5+incompatible
 	github.com/shurcooL/httpfs v0.0.0-20190707220628-8d4bc4ba7749 // indirect
 	github.com/shurcooL/vfsgen v0.0.0-20181202132449-6a9ea43bcacd
@@ -68,6 +80,7 @@ require (
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.6.7
 	github.com/syndtr/gocapability v0.0.0-20180916011248-d98352740cb2 // indirect
+	github.com/syndtr/goleveldb v1.0.1-0.20210305035536-64b5b1c73954 // indirect
 	github.com/vishvananda/netlink v1.0.0
 	github.com/vishvananda/netns v0.0.0-20171111001504-be1fbeda1936 // indirect
 	go.uber.org/fx v1.12.0

@@ -20,6 +20,7 @@ import (
 
 	"github.com/chaos-mesh/chaos-mesh/pkg/store/event"
 	"github.com/chaos-mesh/chaos-mesh/pkg/store/experiment"
+	"github.com/chaos-mesh/chaos-mesh/pkg/store/node"
 	"github.com/chaos-mesh/chaos-mesh/pkg/store/schedule"
 )
 
@@ -30,6 +31,7 @@ var Module = fx.Options(
 		event.NewStore,
 		schedule.NewStore,
 		workflow.NewStore,
+		node.NewStore,
 	),
 	fx.Invoke(experiment.DeleteIncompleteExperiments),
 	fx.Invoke(schedule.DeleteIncompleteSchedules),

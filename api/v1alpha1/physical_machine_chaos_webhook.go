@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/google/uuid"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
@@ -37,6 +38,9 @@ func (in *PhysicalMachineChaos) Default() {
 }
 
 func (in *PhysicalMachineChaosSpec) Default() {
+	if len(in.UID) == 0 {
+		in.UID = uuid.New().String()
+	}
 }
 
 // +kubebuilder:webhook:verbs=create;update,path=/validate-chaos-mesh-org-v1alpha1-physicalmachinechaos,mutating=false,failurePolicy=fail,groups=chaos-mesh.org,resources=physicalmachinechaos,versions=v1alpha1,name=vphysicalmachinechaos.kb.io

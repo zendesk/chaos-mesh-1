@@ -4580,6 +4580,9 @@ spec:
                   type: string
                 expInfo:
                   type: string
+                uid:
+                  description: the experiment ID
+                  type: string
               required:
               - action
               - address
@@ -6651,6 +6654,9 @@ spec:
                             type: string
                           expInfo:
                             type: string
+                          uid:
+                            description: the experiment ID
+                            type: string
                         required:
                         - action
                         - address
@@ -8408,6 +8414,9 @@ spec:
                                   chaos action
                                 type: string
                               expInfo:
+                                type: string
+                              uid:
+                                description: the experiment ID
                                 type: string
                             required:
                             - action
@@ -13936,6 +13945,9 @@ spec:
                   type: string
                 expInfo:
                   type: string
+                uid:
+                  description: the experiment ID
+                  type: string
               required:
               - action
               - address
@@ -15586,6 +15598,9 @@ spec:
                       description: Duration represents the duration of the chaos action
                       type: string
                     expInfo:
+                      type: string
+                    uid:
+                      description: the experiment ID
                       type: string
                   required:
                   - action
@@ -17705,6 +17720,9 @@ spec:
                                 type: string
                               expInfo:
                                 type: string
+                              uid:
+                                description: the experiment ID
+                                type: string
                             required:
                             - action
                             - address
@@ -19525,6 +19543,9 @@ spec:
                                       of the chaos action
                                     type: string
                                   expInfo:
+                                    type: string
+                                  uid:
+                                    description: the experiment ID
                                     type: string
                                 required:
                                 - action
@@ -27408,6 +27429,9 @@ spec:
                         type: string
                       expInfo:
                         type: string
+                      uid:
+                        description: the experiment ID
+                        type: string
                     required:
                     - action
                     - address
@@ -29119,6 +29143,9 @@ spec:
                               action
                             type: string
                           expInfo:
+                            type: string
+                          uid:
+                            description: the experiment ID
                             type: string
                         required:
                         - action

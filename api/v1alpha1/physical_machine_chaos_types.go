@@ -71,6 +71,10 @@ type PhysicalMachineChaosSpec struct {
 	// Duration represents the duration of the chaos action
 	// +optional
 	Duration *string `json:"duration,omitempty"`
+
+	// the experiment ID
+	// +optional
+	UID string `json:"uid"`
 }
 
 // PhysicalMachineChaosStatus defines the observed state of PhysicalMachineChaos
