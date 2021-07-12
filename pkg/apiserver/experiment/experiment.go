@@ -75,6 +75,7 @@ func Register(r *gin.RouterGroup, s *Service) {
 
 	endpoint.GET("", s.listExperiments)
 	endpoint.POST("/new", s.createExperiment)
+	endpoint.POST("/apply", s.applyExperiment)
 	endpoint.GET("/detail/:uid", s.getExperimentDetail)
 	endpoint.DELETE("/:uid", s.deleteExperiment)
 	endpoint.DELETE("/", s.batchDeleteExperiment)
@@ -120,6 +121,47 @@ type updateExperimentFunc func(*core.KubeObjectDesc, client.Client) error
 // StatusResponse defines a common status struct.
 type StatusResponse struct {
 	Status string `json:"status"`
+}
+
+// @Summary Apply a new chaos experiment by K8s client.
+// @Description Apply a new chaos experiment by K8s client.
+// @Produce json
+// @Param request body v1alpha1.PhysicalMachineChaos when kind is `PhysicalMachineChaos` true "Request body"
+// @Success 200 {object} v1alpha1.PhysicalMachineChaos
+// @Failure 400 {object} utils.APIError
+// @Failure 500 {object} utils.APIError
+// @Router /experiments/apply [post]
+func (s *Service) applyExperiment(c *gin.Context) {
+	kind := c.Query("kind")
+
+	// TODO: only support PhysicalMachineChaos now
+	switch kind {
+	case "PhysicalMachineChaos":
+	default:
+		_ = c.Error(utils.ErrInvalidRequest.New(kind + " is not supported"))
+	}
+
+	payload := v1alpha1.PhysicalMachineChaos{}
+
+	err := json.NewDecoder(c.Request.Body).Decode(&payload)
+	if err != nil {
+		_ = c.Error(utils.ErrInternalServer.Wrap(err, "failed to parse request body"))
+		return
+	}
+
+	kubeClient, err := clientpool.ExtractTokenAndGetClient(c.Request.Header)
+	if err != nil {
+		_ = c.Error(utils.ErrInvalidRequest.WrapWithNoMessage(err))
+		return
+	}
+
+	err = kubeClient.Create(context.TODO(), &payload)
+	if err != nil {
+		_ = c.Error(utils.ErrInvalidRequest.WrapWithNoMessage(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, payload)
 }
 
 // @Summary Create a new chaos experiment.
