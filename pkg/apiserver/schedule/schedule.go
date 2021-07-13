@@ -78,6 +78,7 @@ func Register(r *gin.RouterGroup, s *Service) {
 	endpoint.DELETE("/", s.batchDeleteSchedule)
 	endpoint.PUT("/pause/:uid", s.pauseSchedule)
 	endpoint.PUT("/start/:uid", s.startSchedule)
+	endpoint.POST("/apply", s.applySchedule)
 }
 
 // Base represents the base info of an experiment.
@@ -124,7 +125,7 @@ const (
 // @Success 200 {object} v1alpha1.Schedule
 // @Failure 400 {object} utils.APIError
 // @Failure 500 {object} utils.APIError
-// @Router /workflows/apply [post]
+// @Router /schedules/apply [post]
 func (s *Service) applySchedule(c *gin.Context) {
 	kubeCli, err := clientpool.ExtractTokenAndGetClient(c.Request.Header)
 	if err != nil {
