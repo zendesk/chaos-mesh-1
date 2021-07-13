@@ -50,7 +50,9 @@ export function parseSubmit(e: Experiment, env: Env = 'k8s') {
   }
   values.labels = helper1(values.labels as string[])
   values.annotations = helper1(values.annotations as string[])
-  helper2(values.scope)
+  if (env === 'k8s') {
+    helper2(values.scope)
+  }
 
   const kind = values.target.kind
 

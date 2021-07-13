@@ -14,14 +14,24 @@ const New = () => {
   const history = useHistory()
   const intl = useIntl()
 
-  const { scheduleSpecific } = useStoreSelector((state) => state.experiments)
+  const { env, scheduleSpecific } = useStoreSelector((state) => state.experiments)
   const dispatch = useStoreDispatch()
 
   const onSubmit = ({ target, basic }: any) => {
-    const parsedValues = parseSubmit({
-      ...basic,
-      target,
-    })
+    const parsedValues = parseSubmit(
+      {
+        ...basic,
+        target,
+      },
+      env
+    )
+
+    if (env === 'physic') {
+      return {
+        ...parsedValues,
+      }
+    }
+
     const duration = parsedValues.scheduler.duration
     delete (parsedValues as any).scheduler
 
