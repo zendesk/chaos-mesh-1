@@ -88,7 +88,18 @@ const ObjectConfiguration: React.FC<ObjectConfigurationProps> = ({
           {T('newE.steps.scope')}
         </Typography>
 
-        <Selector data={experiment.selector} />
+        {(config.kind as any) !== 'PhysicalMachineChaos' && <Selector data={experiment.selector} />}
+
+        {(config.kind as any) === 'PhysicalMachineChaos' && (
+          <TableRow>
+            <TableCell>{T('physic.address')}</TableCell>
+            <TableCell>
+              <Typography variant="body2" color="textSecondary">
+                {spec.address}
+              </Typography>
+            </TableCell>
+          </TableRow>
+        )}
       </Grid>
 
       <Grid item xs={vertical ? 12 : 3}>
