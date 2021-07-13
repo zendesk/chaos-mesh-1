@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/go-logr/logr"
 	"go.uber.org/fx"
@@ -37,52 +38,56 @@ type Impl struct {
 
 func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
 	impl.Log.Info("apply physical machine chaos")
-	address := records[index].Id
 
 	physicalMachinechaos := obj.(*v1alpha1.PhysicalMachineChaos)
+	addresses := records[index].Id
+	addressArray := strings.Split(addresses, ",")
 
-	url := fmt.Sprintf("%s/api/attack/%s", address, physicalMachinechaos.Spec.Action)
+	for _, address := range addressArray {
 
-	var objmap map[string]interface{}
-	err := json.Unmarshal([]byte(physicalMachinechaos.Spec.ExpInfo), &objmap)
-	if err != nil {
-		impl.Log.Error(err, "fail to unmarshal experiment info")
-		return v1alpha1.NotInjected, err
-	}
-	objmap["uid"] = physicalMachinechaos.Spec.UID
-	expInfo, err := json.Marshal(objmap)
-	if err != nil {
-		impl.Log.Error(err, "fail to marshal experiment info")
-		return v1alpha1.NotInjected, err
-	}
+		url := fmt.Sprintf("%s/api/attack/%s", address, physicalMachinechaos.Spec.Action)
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(expInfo))
-	if err != nil {
-		impl.Log.Error(err, "fail to generate HTTP request")
-		return v1alpha1.NotInjected, err
-	}
-	req.Header.Set("X-Custom-Header", "myvalue")
-	req.Header.Set("Content-Type", "application/json")
+		var objmap map[string]interface{}
+		err := json.Unmarshal([]byte(physicalMachinechaos.Spec.ExpInfo), &objmap)
+		if err != nil {
+			impl.Log.Error(err, "fail to unmarshal experiment info")
+			return v1alpha1.NotInjected, err
+		}
+		objmap["uid"] = physicalMachinechaos.Spec.UID
+		expInfo, err := json.Marshal(objmap)
+		if err != nil {
+			impl.Log.Error(err, "fail to marshal experiment info")
+			return v1alpha1.NotInjected, err
+		}
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		impl.Log.Error(err, "do HTTP request")
-		return v1alpha1.NotInjected, err
-	}
-	defer resp.Body.Close()
+		req, err := http.NewRequest("POST", url, bytes.NewBuffer(expInfo))
+		if err != nil {
+			impl.Log.Error(err, "fail to generate HTTP request")
+			return v1alpha1.NotInjected, err
+		}
+		req.Header.Set("X-Custom-Header", "myvalue")
+		req.Header.Set("Content-Type", "application/json")
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		impl.Log.Error(err, "read HTTP response body")
-		return v1alpha1.NotInjected, err
-	}
-	impl.Log.Info("HTTP response", "status", resp.Status, "body", string(body))
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			impl.Log.Error(err, "do HTTP request")
+			return v1alpha1.NotInjected, err
+		}
+		defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		err = errors.New("HTTP status is not OK")
-		impl.Log.Error(err, "")
-		return v1alpha1.NotInjected, err
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			impl.Log.Error(err, "read HTTP response body")
+			return v1alpha1.NotInjected, err
+		}
+		impl.Log.Info("HTTP response", "address", address, "status", resp.Status, "body", string(body))
+
+		if resp.StatusCode != http.StatusOK {
+			err = errors.New("HTTP status is not OK")
+			impl.Log.Error(err, "")
+			return v1alpha1.NotInjected, err
+		}
 	}
 
 	return v1alpha1.Injected, nil
@@ -90,38 +95,42 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 
 func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
 	impl.Log.Info("recover physical machine chaos")
-	address := records[index].Id
 
 	physicalMachinechaos := obj.(*v1alpha1.PhysicalMachineChaos)
+	addresses := records[index].Id
 
-	url := fmt.Sprintf("%s/api/attack/%s", address, physicalMachinechaos.Spec.UID)
+	addressArray := strings.Split(addresses, ",")
+	// TODO: do this in goroutine
+	for _, address := range addressArray {
+		url := fmt.Sprintf("%s/api/attack/%s", address, physicalMachinechaos.Spec.UID)
 
-	req, err := http.NewRequest("DELETE", url, nil)
-	if err != nil {
-		impl.Log.Error(err, "fail to generate HTTP request")
-		return v1alpha1.Injected, err
-	}
-	req.Header.Set("X-Custom-Header", "myvalue")
-	req.Header.Set("Content-Type", "application/json")
+		req, err := http.NewRequest("DELETE", url, nil)
+		if err != nil {
+			impl.Log.Error(err, "fail to generate HTTP request")
+			return v1alpha1.Injected, err
+		}
+		req.Header.Set("X-Custom-Header", "myvalue")
+		req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		impl.Log.Error(err, "do http request")
-		return v1alpha1.Injected, err
-	}
-	defer resp.Body.Close()
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			impl.Log.Error(err, "do http request")
+			return v1alpha1.Injected, err
+		}
+		defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		impl.Log.Error(err, "read HTTP response body")
-		return v1alpha1.Injected, err
-	}
-	impl.Log.Info("HTTP response", "status", resp.Status, "body", string(body))
-	if resp.StatusCode != http.StatusOK {
-		err = errors.New("HTTP status is not OK")
-		impl.Log.Error(err, "")
-		return v1alpha1.Injected, err
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			impl.Log.Error(err, "read HTTP response body")
+			return v1alpha1.Injected, err
+		}
+		impl.Log.Info("HTTP response", "address", address, "status", resp.Status, "body", string(body))
+		if resp.StatusCode != http.StatusOK {
+			err = errors.New("HTTP status is not OK")
+			impl.Log.Error(err, "")
+			return v1alpha1.Injected, err
+		}
 	}
 
 	return v1alpha1.NotInjected, nil
