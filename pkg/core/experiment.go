@@ -145,16 +145,17 @@ func (s *SelectorInfo) ParseSelector() v1alpha1.PodSelectorSpec {
 
 // TargetInfo defines the information of target objects.
 type TargetInfo struct {
-	Kind         string            `json:"kind" binding:"required,oneof=PodChaos NetworkChaos IOChaos KernelChaos TimeChaos StressChaos DNSChaos AwsChaos GcpChaos"`
-	PodChaos     *PodChaosInfo     `json:"pod_chaos,omitempty" binding:"RequiredFieldEqual=Kind:PodChaos"`
-	NetworkChaos *NetworkChaosInfo `json:"network_chaos,omitempty" binding:"RequiredFieldEqual=Kind:NetworkChaos"`
-	IOChaos      *IOChaosInfo      `json:"io_chaos,omitempty" binding:"RequiredFieldEqual=Kind:IOChaos"`
-	KernelChaos  *KernelChaosInfo  `json:"kernel_chaos,omitempty" binding:"RequiredFieldEqual=Kind:KernelChaos"`
-	TimeChaos    *TimeChaosInfo    `json:"time_chaos,omitempty" binding:"RequiredFieldEqual=Kind:TimeChaos"`
-	StressChaos  *StressChaosInfo  `json:"stress_chaos,omitempty" binding:"RequiredFieldEqual=Kind:StressChaos"`
-	DNSChaos     *DNSChaosInfo     `json:"dns_chaos,omitempty" binding:"RequiredFieldEqual=Kind:DNSChaos"`
-	AwsChaos     *AwsChaosInfo     `json:"aws_chaos,omitempty" binding:"RequiredFieldEqual=Kind:AwsChaos"`
-	GcpChaos     *GcpChaosInfo     `json:"gcp_chaos,omitempty" binding:"RequiredFieldEqual=Kind:GcpChaos"`
+	Kind                 string                    `json:"kind" binding:"required,oneof=PodChaos NetworkChaos IOChaos KernelChaos TimeChaos StressChaos DNSChaos AwsChaos GcpChaos PhysicalMachineChaos"`
+	PodChaos             *PodChaosInfo             `json:"pod_chaos,omitempty" binding:"RequiredFieldEqual=Kind:PodChaos"`
+	NetworkChaos         *NetworkChaosInfo         `json:"network_chaos,omitempty" binding:"RequiredFieldEqual=Kind:NetworkChaos"`
+	IOChaos              *IOChaosInfo              `json:"io_chaos,omitempty" binding:"RequiredFieldEqual=Kind:IOChaos"`
+	KernelChaos          *KernelChaosInfo          `json:"kernel_chaos,omitempty" binding:"RequiredFieldEqual=Kind:KernelChaos"`
+	TimeChaos            *TimeChaosInfo            `json:"time_chaos,omitempty" binding:"RequiredFieldEqual=Kind:TimeChaos"`
+	StressChaos          *StressChaosInfo          `json:"stress_chaos,omitempty" binding:"RequiredFieldEqual=Kind:StressChaos"`
+	DNSChaos             *DNSChaosInfo             `json:"dns_chaos,omitempty" binding:"RequiredFieldEqual=Kind:DNSChaos"`
+	AwsChaos             *AwsChaosInfo             `json:"aws_chaos,omitempty" binding:"RequiredFieldEqual=Kind:AwsChaos"`
+	GcpChaos             *GcpChaosInfo             `json:"gcp_chaos,omitempty" binding:"RequiredFieldEqual=Kind:GcpChaos"`
+	PhysicalMachineChaos *PhysicalMachineChaosInfo `json:"physicalmachine_chaos,omitempty" binding:"RequiredFieldEqual=Kind:PhysicalMachineChaos"`
 }
 
 // SchedulerInfo defines the scheduler information.
@@ -230,6 +231,15 @@ type AwsChaosInfo struct {
 	Ec2Instance string  `json:"ec2Instance"`
 	EbsVolume   *string `json:"volumeID,omitempty"`
 	DeviceName  *string `json:"deviceName,omitempty"`
+}
+
+// PhysicalMachineChaosInfo defines the basic information of physical machine chaos for creating a new PhysicalMachineChaos.
+type PhysicalMachineChaosInfo struct {
+	Action   string  `json:"action" binding:"oneof='stress' 'network' 'disk' 'host' 'process'"`
+	Address  string  `json:"address"`
+	ExpInfo  string  `json:"expInfo"`
+	Duration *string `json:"duration"`
+	UID      string  `json:"uid"`
 }
 
 // GcpChaosInfo defines the basic information of aws chaos for creating a new AwsChaos.
@@ -421,6 +431,28 @@ func (e *Experiment) ParseAwsChaos() (KubeObjectDesc, error) {
 // ParseGcpChaos Parse GcpChaos JSON string into KubeObjectDesc.
 func (e *Experiment) ParseGcpChaos() (KubeObjectDesc, error) {
 	chaos := &v1alpha1.GcpChaos{}
+	if err := json.Unmarshal([]byte(e.Experiment), &chaos); err != nil {
+		return KubeObjectDesc{}, err
+	}
+
+	return KubeObjectDesc{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: chaos.APIVersion,
+			Kind:       chaos.Kind,
+		},
+		Meta: KubeObjectMeta{
+			Name:        chaos.Name,
+			Namespace:   chaos.Namespace,
+			Labels:      chaos.Labels,
+			Annotations: chaos.Annotations,
+		},
+		Spec: chaos.Spec,
+	}, nil
+}
+
+// ParsePhysicalMachineChaos Parse PhysicalMachineChaos JSON string into KubeObjectDesc.
+func (e *Experiment) ParsePhysicalMachineChaos() (KubeObjectDesc, error) {
+	chaos := &v1alpha1.PhysicalMachineChaos{}
 	if err := json.Unmarshal([]byte(e.Experiment), &chaos); err != nil {
 		return KubeObjectDesc{}, err
 	}

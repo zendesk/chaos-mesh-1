@@ -900,6 +900,50 @@ func (s *Service) getGcpChaosDetail(namespace string, name string, kubeCli clien
 	}, nil
 }
 
+func (s *Service) getPhysicalMachineChaosDetail(namespace string, name string, kubeCli client.Client) (Detail, error) {
+	chaos := &v1alpha1.PhysicalMachineChaos{}
+
+	chaosKey := types.NamespacedName{Namespace: namespace, Name: name}
+	if err := kubeCli.Get(context.Background(), chaosKey, chaos); err != nil {
+		if apierrors.IsNotFound(err) {
+			return Detail{}, utils.ErrNotFound.NewWithNoMessage()
+		}
+
+		return Detail{}, err
+	}
+
+	gvk, err := apiutil.GVKForObject(chaos, s.scheme)
+	if err != nil {
+		return Detail{}, err
+	}
+
+	return Detail{
+		Experiment: Experiment{
+			Base: Base{
+				Kind:      gvk.Kind,
+				Namespace: chaos.Namespace,
+				Name:      chaos.Name,
+			},
+			Created: chaos.GetChaos().StartTime.Format(time.RFC3339),
+			Status:  string(utils.GetChaosState(chaos)),
+			UID:     chaos.GetChaos().UID,
+		},
+		KubeObject: core.KubeObjectDesc{
+			TypeMeta: metav1.TypeMeta{
+				APIVersion: gvk.GroupVersion().String(),
+				Kind:       gvk.Kind,
+			},
+			Meta: core.KubeObjectMeta{
+				Name:        chaos.Name,
+				Namespace:   chaos.Namespace,
+				Labels:      chaos.Labels,
+				Annotations: chaos.Annotations,
+			},
+			Spec: chaos.Spec,
+		},
+	}, nil
+}
+
 // @Summary Get chaos experiments from Kubernetes cluster.
 // @Description Get chaos experiments from Kubernetes cluster.
 // @Tags experiments
@@ -1022,6 +1066,8 @@ func (s *Service) getExperimentDetail(c *gin.Context) {
 		expDetail, err = s.getAwsChaosDetail(ns, name, kubeCli)
 	case v1alpha1.KindGcpChaos:
 		expDetail, err = s.getGcpChaosDetail(ns, name, kubeCli)
+	case v1alpha1.KindPhysicalMachineChaos:
+		expDetail, err = s.getPhysicalMachineChaosDetail(ns, name, kubeCli)
 	}
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
@@ -1459,15 +1505,16 @@ func (s *Service) updateExperiment(c *gin.Context) {
 	}
 
 	updateFuncs := map[string]updateExperimentFunc{
-		v1alpha1.KindPodChaos:     s.updatePodChaos,
-		v1alpha1.KindNetworkChaos: s.updateNetworkChaos,
-		v1alpha1.KindIOChaos:      s.updateIOChaos,
-		v1alpha1.KindStressChaos:  s.updateStressChaos,
-		v1alpha1.KindTimeChaos:    s.updateTimeChaos,
-		v1alpha1.KindKernelChaos:  s.updateKernelChaos,
-		v1alpha1.KindDNSChaos:     s.updateDNSChaos,
-		v1alpha1.KindAwsChaos:     s.updateAwsChaos,
-		v1alpha1.KindGcpChaos:     s.updateGcpChaos,
+		v1alpha1.KindPodChaos:             s.updatePodChaos,
+		v1alpha1.KindNetworkChaos:         s.updateNetworkChaos,
+		v1alpha1.KindIOChaos:              s.updateIOChaos,
+		v1alpha1.KindStressChaos:          s.updateStressChaos,
+		v1alpha1.KindTimeChaos:            s.updateTimeChaos,
+		v1alpha1.KindKernelChaos:          s.updateKernelChaos,
+		v1alpha1.KindDNSChaos:             s.updateDNSChaos,
+		v1alpha1.KindAwsChaos:             s.updateAwsChaos,
+		v1alpha1.KindGcpChaos:             s.updateGcpChaos,
+		v1alpha1.KindPhysicalMachineChaos: s.updatePhysicalMachineChaos,
 	}
 
 	f, ok := updateFuncs[exp.Kind]
@@ -1630,6 +1677,23 @@ func (s *Service) updateAwsChaos(exp *core.KubeObjectDesc, kubeCli client.Client
 
 func (s *Service) updateGcpChaos(exp *core.KubeObjectDesc, kubeCli client.Client) error {
 	chaos := &v1alpha1.AwsChaos{}
+	meta := &exp.Meta
+	key := types.NamespacedName{Namespace: meta.Namespace, Name: meta.Name}
+
+	if err := kubeCli.Get(context.Background(), key, chaos); err != nil {
+		return err
+	}
+
+	chaos.SetLabels(meta.Labels)
+	chaos.SetAnnotations(meta.Annotations)
+
+	// TODO: update chaos
+
+	return kubeCli.Update(context.Background(), chaos)
+}
+
+func (s *Service) updatePhysicalMachineChaos(exp *core.KubeObjectDesc, kubeCli client.Client) error {
+	chaos := &v1alpha1.PhysicalMachineChaos{}
 	meta := &exp.Meta
 	key := types.NamespacedName{Namespace: meta.Namespace, Name: meta.Name}
 

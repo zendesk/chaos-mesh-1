@@ -158,16 +158,16 @@ func (s *Service) createSchedule(c *gin.Context) {
 	}
 
 	parseFuncs := map[string]parseScheduleFunc{
-		v1alpha1.KindPodChaos:     parsePodChaos,
-		v1alpha1.KindNetworkChaos: parseNetworkChaos,
-		v1alpha1.KindIOChaos:      parseIOChaos,
-		v1alpha1.KindStressChaos:  parseStressChaos,
-		v1alpha1.KindTimeChaos:    parseTimeChaos,
-		v1alpha1.KindKernelChaos:  parseKernelChaos,
-		v1alpha1.KindDNSChaos:     parseDNSChaos,
-		v1alpha1.KindAwsChaos:     parseAwsChaos,
-		v1alpha1.KindGcpChaos:     parseGcpChaos,
-		//v1alpha1.KindPhysicalMachineChaos: parsePhysicalMachineChaos,
+		v1alpha1.KindPodChaos:             parsePodChaos,
+		v1alpha1.KindNetworkChaos:         parseNetworkChaos,
+		v1alpha1.KindIOChaos:              parseIOChaos,
+		v1alpha1.KindStressChaos:          parseStressChaos,
+		v1alpha1.KindTimeChaos:            parseTimeChaos,
+		v1alpha1.KindKernelChaos:          parseKernelChaos,
+		v1alpha1.KindDNSChaos:             parseDNSChaos,
+		v1alpha1.KindAwsChaos:             parseAwsChaos,
+		v1alpha1.KindGcpChaos:             parseGcpChaos,
+		v1alpha1.KindPhysicalMachineChaos: parsePhysicalMachineChaos,
 	}
 
 	f, ok := parseFuncs[exp.Target.Kind]
@@ -494,6 +494,34 @@ func parseGcpChaos(exp *core.ScheduleInfo) v1alpha1.ScheduleItem {
 
 	return v1alpha1.ScheduleItem{
 		EmbedChaos: v1alpha1.EmbedChaos{GcpChaos: &chaos.Spec},
+	}
+}
+
+func parsePhysicalMachineChaos(exp *core.ScheduleInfo) v1alpha1.ScheduleItem {
+	chaos := &v1alpha1.PhysicalMachineChaos{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:        exp.Name,
+			Namespace:   exp.Namespace,
+			Labels:      exp.Labels,
+			Annotations: exp.Annotations,
+		},
+		Spec: v1alpha1.PhysicalMachineChaosSpec{
+			Action: v1alpha1.PhysicalMachineChaosAction(exp.Target.PhysicalMachineChaos.Action),
+			PhysicalMachineSelector: v1alpha1.PhysicalMachineSelector{
+				Address: exp.Target.PhysicalMachineChaos.Address,
+			},
+			ExpInfo:  exp.Target.PhysicalMachineChaos.ExpInfo,
+			Duration: exp.Target.PhysicalMachineChaos.Duration,
+			UID:      exp.Target.PhysicalMachineChaos.UID,
+		},
+	}
+
+	if exp.Duration != "" {
+		chaos.Spec.Duration = &exp.Duration
+	}
+
+	return v1alpha1.ScheduleItem{
+		EmbedChaos: v1alpha1.EmbedChaos{PhysicalMachineChaos: &chaos.Spec},
 	}
 }
 
