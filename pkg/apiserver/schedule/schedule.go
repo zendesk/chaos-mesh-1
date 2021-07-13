@@ -116,6 +116,37 @@ const (
 	StartSchedule pauseFlag = false
 )
 
+// @Summary Create a new schedule.
+// @Description Create a new schedule.
+// @Tags schedules
+// @Produce json
+// @Param request body v1alpha1.Schedule true "Request body"
+// @Success 200 {object} v1alpha1.Schedule
+// @Failure 400 {object} utils.APIError
+// @Failure 500 {object} utils.APIError
+// @Router /workflows/apply [post]
+func (s *Service) applySchedule(c *gin.Context) {
+	kubeCli, err := clientpool.ExtractTokenAndGetClient(c.Request.Header)
+	if err != nil {
+		_ = c.Error(utils.ErrInvalidRequest.WrapWithNoMessage(err))
+		return
+	}
+	payload := &v1alpha1.Schedule{}
+
+	err = json.NewDecoder(c.Request.Body).Decode(&payload)
+	if err != nil {
+		_ = c.Error(utils.ErrInternalServer.Wrap(err, "failed to parse request body"))
+		return
+	}
+
+	err = kubeCli.Create(c.Request.Context(), payload)
+	if err != nil {
+		_ = c.Error(utils.ErrInternalServer.WrapWithNoMessage(err))
+		return
+	}
+	c.JSON(http.StatusOK, payload)
+}
+
 // @Summary Create a new schedule experiment.
 // @Description Create a new schedule experiment.
 // @Tags schedules
