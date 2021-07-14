@@ -95,7 +95,7 @@ const ObjectConfiguration: React.FC<ObjectConfigurationProps> = ({
             <TableCell>{T('physic.address')}</TableCell>
             <TableCell>
               <Typography variant="body2" color="textSecondary">
-                {spec.address}
+                {inSchedule ? spec.physicalmachineChaos.address : spec.address}
               </Typography>
             </TableCell>
           </TableRow>

@@ -75,7 +75,7 @@ const NewWorkflow = () => {
   const history = useHistory()
 
   const state = useStoreSelector((state) => state)
-  const { namespaces } = state.experiments
+  const { namespaces, env } = state.experiments
   const { templates } = state.workflows
   const dispatch = useStoreDispatch()
 
@@ -257,7 +257,7 @@ const NewWorkflow = () => {
                   <Box flex={1}>
                     <Paper sx={{ p: 0 }}>
                       <YAMLEditor
-                        data={constructWorkflow(workflowBasic, Object.values(templates))}
+                        data={constructWorkflow(env, workflowBasic, Object.values(templates))}
                         mountEditor={setYAMLEditor}
                       />
                     </Paper>

@@ -66,7 +66,7 @@ export function parseSubmit(e: Experiment, env: Env = 'k8s') {
         action = 'network'
         break
     }
-    const addresses = values.scope.addresses.join(',')
+    const addresses = values.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
     const expInfo = JSON.stringify(values.target[_snakecase(kind)])
 
     return {
@@ -74,7 +74,7 @@ export function parseSubmit(e: Experiment, env: Env = 'k8s') {
       kind: 'PhysicalMachineChaos',
       metadata: {
         name: values.name,
-        namespace: values.namespace,
+        namespace: values.namespace || 'default',
         labels: values.labels,
         annotations: values.annotations,
       },
@@ -82,7 +82,7 @@ export function parseSubmit(e: Experiment, env: Env = 'k8s') {
         action,
         address: addresses,
         expInfo,
-        duration: values.scheduler.duration,
+        duration: values.scheduler ? values.scheduler.duration || undefined : values.deadline,
       },
     }
   }
@@ -251,7 +251,7 @@ function scopeToYAMLJSON(scope: ExperimentScope) {
   return result
 }
 
-export function constructWorkflow(basic: WorkflowBasic, templates: Template[]) {
+export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Template[]) {
   const { name, namespace, deadline } = basic
   const children: string[] = templates.map((d) => d.name)
   const realTemplates: Record<string, any>[] = []
@@ -271,15 +271,42 @@ export function constructWorkflow(basic: WorkflowBasic, templates: Template[]) {
           const kind = experiment.target.kind
           const spec = _snakecase(kind)
 
-          pushTemplate({
-            name: t.name,
-            templateType: kind,
-            deadline: experiment.basic.deadline,
-            [toCamelCase(kind)]: {
-              ...scopeToYAMLJSON(basic.scope),
-              ...experiment.target[spec],
-            },
-          })
+          if (env === 'k8s') {
+            pushTemplate({
+              name: t.name,
+              templateType: kind,
+              deadline: experiment.basic.deadline,
+              [toCamelCase(kind)]: {
+                ...scopeToYAMLJSON(basic.scope),
+                ...experiment.target[spec],
+              },
+            })
+          } else {
+            let action
+            switch (kind) {
+              case 'StressChaos':
+                action = 'stress'
+                break
+              case 'NetworkChaos':
+                action = 'network'
+                break
+            }
+            const addresses = basic.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
+            const expInfo = JSON.stringify(
+              Object.fromEntries(Object.entries(experiment.target[spec]).filter(([_, v]) => v != null && v !== ''))
+            )
+
+            pushTemplate({
+              name: t.name,
+              templateType: 'PhysicalMachineChaos',
+              deadline: experiment.basic.deadline,
+              physicalmachineChaos: {
+                action,
+                address: addresses,
+                expInfo,
+              },
+            })
+          }
 
           break
         case 'serial':
@@ -312,15 +339,42 @@ export function constructWorkflow(basic: WorkflowBasic, templates: Template[]) {
               const kind = e.target.kind
               const spec = _snakecase(kind)
 
-              pushTemplate({
-                name,
-                templateType: kind,
-                deadline: e.basic.deadline,
-                [toCamelCase(kind)]: {
-                  ...scopeToYAMLJSON(basic.scope),
-                  ...e.target[spec],
-                },
-              })
+              if (env === 'k8s') {
+                pushTemplate({
+                  name,
+                  templateType: kind,
+                  deadline: e.basic.deadline,
+                  [toCamelCase(kind)]: {
+                    ...scopeToYAMLJSON(basic.scope),
+                    ...e.target[spec],
+                  },
+                })
+              } else {
+                let action
+                switch (kind) {
+                  case 'StressChaos':
+                    action = 'stress'
+                    break
+                  case 'NetworkChaos':
+                    action = 'network'
+                    break
+                }
+                const addresses = basic.scope.addresses.join(',')
+                const expInfo = JSON.stringify(
+                  Object.fromEntries(Object.entries(e.target[spec]).filter(([_, v]) => v != null && v !== ''))
+                )
+
+                pushTemplate({
+                  name,
+                  templateType: 'PhysicalMachineChaos',
+                  deadline: e.basic.deadline,
+                  physicalmachineChaos: {
+                    action,
+                    address: addresses,
+                    expInfo,
+                  },
+                })
+              }
             }
           })
 

@@ -26,23 +26,32 @@ const New = () => {
       env
     )
 
+    let data
     if (env === 'physic') {
-      return {
+      data = {
         ...parsedValues,
+        kind: 'Schedule',
+        spec: {
+          schedule: scheduleSpecific.schedule,
+          startingDeadlineSeconds: scheduleSpecific.starting_deadline_seconds,
+          concurrencyPolicy: scheduleSpecific.concurrency_policy,
+          historyLimit: scheduleSpecific.history_limit,
+          type: 'PhysicalMachineChaos',
+          physicalmachineChaos: parsedValues.spec,
+        },
+      }
+    } else {
+      const duration = parsedValues.scheduler.duration
+      delete (parsedValues as any).scheduler
+
+      data = {
+        ...parsedValues,
+        duration,
+        ...scheduleSpecific,
       }
     }
 
-    const duration = parsedValues.scheduler.duration
-    delete (parsedValues as any).scheduler
-
-    const data = {
-      ...parsedValues,
-      duration,
-      ...scheduleSpecific,
-    }
-
-    api.schedules
-      .newSchedule(data)
+    api.schedules[env === 'k8s' ? 'newSchedule' : 'applySchedule'](data)
       .then(() => {
         dispatch(
           setAlert({

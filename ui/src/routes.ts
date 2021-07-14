@@ -7,6 +7,7 @@ import Experiments from 'pages/Experiments'
 import NewExperiment from 'pages/Experiments/New'
 import NewSchedule from 'pages/Schedules/New'
 import NewWorkflow from 'components/NewWorkflow'
+import Physics from 'pages/Physics'
 import { RouteProps } from 'react-router'
 import Schedule from 'pages/Schedules/Single'
 import Schedules from 'pages/Schedules'
@@ -72,6 +73,11 @@ const routes: RouteProps[] = [
   {
     component: Archive,
     path: '/archives/:uuid',
+  },
+  {
+    component: Physics,
+    path: '/physics',
+    exact: true,
   },
   {
     component: Settings,

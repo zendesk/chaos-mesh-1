@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function hasLocalBreadcrumb(b: string) {
-  return ['dashboard', 'workflows', 'schedules', 'experiments', 'events', 'archives', 'settings'].includes(b)
+  return ['dashboard', 'workflows', 'schedules', 'experiments', 'events', 'archives', 'physics', 'settings'].includes(b)
 }
 
 interface HeaderProps {
