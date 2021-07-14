@@ -66,7 +66,7 @@ export function parseSubmit(e: Experiment, env: Env = 'k8s') {
         action = 'network'
         break
     }
-    const addresses = values.scope.addresses.join(',')
+    const addresses = values.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
     const expInfo = JSON.stringify(values.target[_snakecase(kind)])
 
     return {
@@ -82,7 +82,7 @@ export function parseSubmit(e: Experiment, env: Env = 'k8s') {
         action,
         address: addresses,
         expInfo,
-        duration: values.scheduler ? values.scheduler.duration : values.deadline,
+        duration: values.scheduler ? values.scheduler.duration || undefined : values.deadline,
       },
     }
   }
@@ -291,7 +291,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
                 action = 'network'
                 break
             }
-            const addresses = basic.scope.addresses.join(',')
+            const addresses = basic.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
             const expInfo = JSON.stringify(
               Object.fromEntries(Object.entries(experiment.target[spec]).filter(([_, v]) => v != null && v !== ''))
             )
