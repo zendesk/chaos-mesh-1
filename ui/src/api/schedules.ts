@@ -6,6 +6,7 @@ import { ScheduleSpecific } from 'components/Schedule/types'
 import http from './http'
 
 export const newSchedule = (data: Experiment & ScheduleSpecific) => http.post('/schedules', data)
+export const applySchedule = (data: any) => http.post('/schedules/apply?kind=PhysicalMachineChaos', data)
 
 export const schedules = (params?: ScheduleParams) =>
   http.get<Schedule[]>('/schedules', {

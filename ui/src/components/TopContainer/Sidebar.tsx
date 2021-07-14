@@ -1,4 +1,4 @@
-import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
+import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText, SvgIcon } from '@material-ui/core'
 
 import AccountTreeOutlinedIcon from '@material-ui/icons/AccountTreeOutlined'
 import ArchiveOutlinedIcon from '@material-ui/icons/ArchiveOutlined'
@@ -7,6 +7,7 @@ import ExperimentIcon from 'components-mui/Icons/Experiment'
 import GitHubIcon from '@material-ui/icons/GitHub'
 import MenuBookOutlinedIcon from '@material-ui/icons/MenuBookOutlined'
 import { NavLink } from 'react-router-dom'
+import { ReactComponent as PhysicIcon } from 'images/physic.svg'
 import ScheduleIcon from '@material-ui/icons/Schedule'
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined'
 import T from 'components/T'
@@ -113,6 +114,14 @@ const listItems = [
   {
     icon: <ArchiveOutlinedIcon />,
     text: 'archives',
+  },
+  {
+    icon: (
+      <SvgIcon fontSize="small">
+        <PhysicIcon />
+      </SvgIcon>
+    ),
+    text: 'physics',
   },
   {
     icon: <SettingsOutlinedIcon />,

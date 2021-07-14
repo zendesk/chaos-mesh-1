@@ -159,7 +159,7 @@ const Step1 = () => {
                 {iconByKind('physic')}
               </Box>
               <Box flex={1.5} textAlign="center">
-                <Typography variant="button">{T('physic.title')}</Typography>
+                <Typography variant="button">{T('physics.single')}</Typography>
               </Box>
             </Box>
           </Card>

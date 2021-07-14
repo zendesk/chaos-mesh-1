@@ -216,6 +216,11 @@
     "deleteMulti": "Delete selected archives",
     "deleteDesc": "The Archive will be permanently deleted"
   },
+  "physics": {
+    "title": "Physics",
+    "single": "Physic",
+    "notFound": "No physical machines found"
+  },
   "settings": {
     "title": "Settings",
     "debugMode": {
@@ -355,13 +360,11 @@
     "phaseSelectors": "Phase Selectors"
   },
   "physic": {
-    "title": "Physic",
     "select": "Select addresses",
-    "noAddress": "No address. Please add an address below and use it",
+    "noAddress": "No address. Please add an address and use it",
     "add": "Add address",
     "nameHelper": "The address' alias",
     "address": "Address",
-    "addressHelper": "Physical machine chaosd address",
-    "manage": "Manage Addresses"
+    "addressHelper": "Physical machine chaosd address"
   }
 }

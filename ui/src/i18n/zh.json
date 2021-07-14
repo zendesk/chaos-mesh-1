@@ -218,6 +218,11 @@
     "deleteMulti": "删除所选归档",
     "deleteDesc": "归档将被永久删除"
   },
+  "physics": {
+    "title": "物理机",
+    "single": "物理",
+    "notFound": "未发现物理机"
+  },
   "settings": {
     "title": "设置",
     "debugMode": {
@@ -357,13 +362,11 @@
     "phaseSelectors": "阶段选择器"
   },
   "physic": {
-    "title": "物理",
     "select": "选择地址",
-    "noAddress": "无地址。请在下方添加地址后使用",
+    "noAddress": "无地址。请添加地址后使用",
     "add": "添加地址",
     "nameHelper": "地址别名",
     "address": "地址",
-    "addressHelper": "物理机器 chaosd 地址",
-    "manage": "管理地址"
+    "addressHelper": "物理机器 chaosd 地址"
   }
 }
