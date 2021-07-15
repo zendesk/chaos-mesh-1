@@ -359,7 +359,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
                     action = 'network'
                     break
                 }
-                const addresses = basic.scope.addresses.join(',')
+                const addresses = basic.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
                 const expInfo = JSON.stringify(
                   Object.fromEntries(Object.entries(e.target[spec]).filter(([_, v]) => v != null && v !== ''))
                 )
