@@ -88,17 +88,25 @@ const ObjectConfiguration: React.FC<ObjectConfigurationProps> = ({
           {T('newE.steps.scope')}
         </Typography>
 
-        {(config.kind as any) !== 'PhysicalMachineChaos' && <Selector data={experiment.selector} />}
+        {(inNode ? (config as any).templateType : (config.kind as any)) !== 'PhysicalMachineChaos' && (
+          <Selector data={experiment.selector} />
+        )}
 
-        {(config.kind as any) === 'PhysicalMachineChaos' && (
-          <TableRow>
-            <TableCell>{T('physic.address')}</TableCell>
-            <TableCell>
-              <Typography variant="body2" color="textSecondary">
-                {inSchedule ? spec.physicalmachineChaos.address : spec.address}
-              </Typography>
-            </TableCell>
-          </TableRow>
+        {(inNode ? (config as any).templateType : (config.kind as any)) === 'PhysicalMachineChaos' && (
+          <Table>
+            <TableRow>
+              <TableCell>{T('physic.address')}</TableCell>
+              <TableCell>
+                <Typography variant="body2" color="textSecondary">
+                  {inNode
+                    ? (config as any).physicalmachineChaos.address
+                    : inSchedule
+                    ? spec.physicalmachineChaos.address
+                    : spec.address}
+                </Typography>
+              </TableCell>
+            </TableRow>
+          </Table>
         )}
       </Grid>
 
