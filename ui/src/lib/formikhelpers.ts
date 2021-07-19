@@ -271,7 +271,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
           const kind = experiment.target.kind
           const spec = _snakecase(kind)
 
-          if (env === 'k8s') {
+          if (t.env === 'k8s') {
             pushTemplate({
               name: t.name,
               templateType: kind,
@@ -339,7 +339,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
               const kind = e.target.kind
               const spec = _snakecase(kind)
 
-              if (env === 'k8s') {
+              if (t.env === 'k8s') {
                 pushTemplate({
                   name,
                   templateType: kind,

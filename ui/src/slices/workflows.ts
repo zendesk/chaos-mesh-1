@@ -1,5 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
+import { Env } from './experiments'
+
 export interface TemplateExperiment {
   target: any
   basic: any
@@ -21,6 +23,7 @@ export interface TemplateCustom {
 
 export interface Template {
   index?: number
+  env?: Env
   type: 'single' | 'serial' | 'parallel' | 'suspend' | 'custom'
   name: string
   deadline?: string

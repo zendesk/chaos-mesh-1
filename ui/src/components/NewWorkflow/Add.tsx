@@ -63,6 +63,7 @@ const Add: React.FC<AddProps> = ({
   const intl = useIntl()
 
   const dispatch = useStoreDispatch()
+  const { env } = useStoreSelector((state) => state.experiments)
   const { templates: storeTemplates } = useStoreSelector((state) => state.workflows)
 
   const [initialValues, setInitialValues] = useState({
@@ -211,6 +212,7 @@ const Add: React.FC<AddProps> = ({
 
     const name = experiment.basic.name
     const template = {
+      env,
       type,
       name,
       experiment,
