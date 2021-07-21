@@ -97,6 +97,12 @@
       },
       "physicalmachine": {
         "title": "Physic Fault"
+      },
+      "disk": {
+        "title": "Disk Fault"
+      },
+      "process": {
+        "title": "Process interruption"
       }
     },
     "run": {

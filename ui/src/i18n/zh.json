@@ -97,6 +97,12 @@
       },
       "physicalmachine": {
         "title": "物理机故障"
+      },
+      "disk": {
+        "title": "磁盘故障"
+      },
+      "process": {
+        "title": "进程中断"
       }
     },
     "run": {

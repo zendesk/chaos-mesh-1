@@ -227,6 +227,10 @@ const Step1 = () => {
               <Box mt={6}>
                 <Stress onSubmit={handleSubmitStep1} />
               </Box>
+            ) : (kind as any) === 'ProcessChaos' ? (
+              <Box mt={6}>
+                <TargetGenerated env={env} data={(targetData as any)[kind].spec!} onSubmit={handleSubmitStep1} />
+              </Box>
             ) : null}
           </Box>
         )}

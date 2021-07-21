@@ -1,6 +1,7 @@
 import { ReactComponent as AWSIcon } from 'images/chaos/aws.svg'
 import { ReactComponent as ClockIcon } from 'images/chaos/time.svg'
 import { ReactComponent as DNSIcon } from 'images/chaos/dns.svg'
+import { ReactComponent as DiskIcon } from 'images/chaos/disk.svg'
 import { ExperimentKind } from 'components/NewExperiment/types'
 import { ReactComponent as FileSystemIOIcon } from 'images/chaos/io.svg'
 import { ReactComponent as GCPIcon } from 'images/chaos/gcp.svg'
@@ -9,12 +10,13 @@ import { ReactComponent as LinuxKernelIcon } from 'images/chaos/kernel.svg'
 import { ReactComponent as NetworkIcon } from 'images/chaos/network.svg'
 import { ReactComponent as PhysicIcon } from 'images/physic.svg'
 import { ReactComponent as PodLifecycleIcon } from 'images/chaos/pod.svg'
+import { ReactComponent as ProcessIcon } from 'images/chaos/process.svg'
 import { ReactComponent as StressIcon } from 'images/chaos/stress.svg'
 import { SvgIcon } from '@material-ui/core'
 import T from 'components/T'
 
 export function iconByKind(
-  kind: ExperimentKind | 'PhysicalMachineChaos' | 'Schedule' | 'k8s' | 'physic',
+  kind: ExperimentKind | 'PhysicalMachineChaos' | 'DiskChaos' | 'ProcessChaos' | 'Schedule' | 'k8s' | 'physic',
   size: 'small' | 'large' = 'large'
 ) {
   let icon
@@ -54,6 +56,12 @@ export function iconByKind(
       break
     case 'GCPChaos':
       icon = <GCPIcon />
+      break
+    case 'DiskChaos':
+      icon = <DiskIcon />
+      break
+    case 'ProcessChaos':
+      icon = <ProcessIcon />
       break
   }
 

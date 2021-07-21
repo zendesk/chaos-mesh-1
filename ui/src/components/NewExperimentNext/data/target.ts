@@ -226,93 +226,171 @@ const networkPhysicCommon: Spec = {
   },
 }
 
-export const dataPhysic: Record<Extract<Kind, 'StressChaos' | 'NetworkChaos'>, Target> = {
-  StressChaos: {
-    categories: [
-      {
-        name: 'CPU',
-        key: 'cpu',
-        spec: {
-          action: 'cpu' as any,
-          load: {
-            field: 'number',
-            label: 'Load',
-            value: 0,
-            helperText: 'Load',
-          },
-          workers: {
-            field: 'number',
-            label: 'Workers',
-            value: 0,
-            helperText: 'Workers',
-          },
-        },
-      },
-      {
-        name: 'Memory',
-        key: 'mem',
-        spec: {
-          action: 'mem' as any,
-          size: {
-            field: 'text',
-            label: 'Size',
-            value: '',
-            helperText: 'The supported formats of the size are: B, KB/KiB, MB/MiB, GB/GiB, TB/TiB.',
-          },
-        },
-      },
-    ],
+const diskPyhsicCommon: Spec = {
+  size: {
+    field: 'text',
+    label: 'Size',
+    value: '',
+    helperText:
+      'The supported formats of the size are: c(=1), w(=2), kB(=1000), K(=1024), MB(=1024), M(=1024x1024), GB and so on.',
   },
-  NetworkChaos: {
-    categories: [
-      {
-        name: 'Corrupt',
-        key: 'corrupt',
-        spec: {
-          action: 'corrupt' as any,
-          ...networkPhysicCommon,
-        },
-      },
-      {
-        name: 'Duplicate',
-        key: 'duplicate',
-        spec: {
-          action: 'duplicate' as any,
-          ...networkPhysicCommon,
-        },
-      },
-      {
-        name: 'Loss',
-        key: 'loss',
-        spec: {
-          action: 'loss' as any,
-          ...networkPhysicCommon,
-        },
-      },
-      {
-        name: 'Delay',
-        key: 'delay',
-        spec: {
-          action: 'delay' as any,
-          latency: {
-            field: 'text',
-            label: 'Latency',
-            value: '',
-            helperText: 'The latency of delay',
-          },
-          jitter: {
-            field: 'text',
-            label: 'Jitter',
-            value: '',
-            helperText: 'The jitter of delay',
-          },
-          ...networkPhysicCommon,
-          percent: undefined as any,
-        },
-      },
-    ],
+  path: {
+    field: 'text',
+    label: 'Path',
+    value: '',
+    helperText: 'Specify the file path of the data to be read/written',
   },
 }
+
+export const dataPhysic: Record<Extract<Kind, 'StressChaos' | 'NetworkChaos'> | 'DiskChaos' | 'ProcessChaos', Target> =
+  {
+    StressChaos: {
+      categories: [
+        {
+          name: 'CPU',
+          key: 'cpu',
+          spec: {
+            action: 'cpu' as any,
+            load: {
+              field: 'number',
+              label: 'Load',
+              value: 0,
+              helperText: 'Load',
+            },
+            workers: {
+              field: 'number',
+              label: 'Workers',
+              value: 0,
+              helperText: 'Workers',
+            },
+          },
+        },
+        {
+          name: 'Memory',
+          key: 'mem',
+          spec: {
+            action: 'mem' as any,
+            size: {
+              field: 'text',
+              label: 'Size',
+              value: '',
+              helperText: 'The supported formats of the size are: B, KB/KiB, MB/MiB, GB/GiB, TB/TiB.',
+            },
+          },
+        },
+      ],
+    },
+    NetworkChaos: {
+      categories: [
+        {
+          name: 'Corrupt',
+          key: 'corrupt',
+          spec: {
+            action: 'corrupt' as any,
+            ...networkPhysicCommon,
+          },
+        },
+        {
+          name: 'Duplicate',
+          key: 'duplicate',
+          spec: {
+            action: 'duplicate' as any,
+            ...networkPhysicCommon,
+          },
+        },
+        {
+          name: 'Loss',
+          key: 'loss',
+          spec: {
+            action: 'loss' as any,
+            ...networkPhysicCommon,
+          },
+        },
+        {
+          name: 'Delay',
+          key: 'delay',
+          spec: {
+            action: 'delay' as any,
+            latency: {
+              field: 'text',
+              label: 'Latency',
+              value: '',
+              helperText: 'The latency of delay',
+            },
+            jitter: {
+              field: 'text',
+              label: 'Jitter',
+              value: '',
+              helperText: 'The jitter of delay',
+            },
+            ...networkPhysicCommon,
+            percent: undefined as any,
+          },
+        },
+      ],
+    },
+    DiskChaos: {
+      categories: [
+        {
+          name: 'Read Payload',
+          key: 'read-payload',
+          spec: {
+            action: 'read-payload' as any,
+            ...diskPyhsicCommon,
+            payload_process_num: {
+              field: 'number',
+              label: 'Payload process num',
+              value: 1,
+            },
+          },
+        },
+        {
+          name: 'Write Payload',
+          key: 'write-payload',
+          spec: {
+            action: 'write-payload' as any,
+            ...diskPyhsicCommon,
+            payload_process_num: {
+              field: 'number',
+              label: 'Payload process num',
+              value: 1,
+            },
+          },
+        },
+        {
+          name: 'Fill',
+          key: 'fill',
+          spec: {
+            action: 'fill' as any,
+            ...diskPyhsicCommon,
+            fill_by_fallocate: {
+              field: 'select',
+              items: ['true', 'false'],
+              label: 'Fill by fallocate',
+              value: 'true',
+              helperText: 'Whether to use fallocate to quickly request disk space',
+            },
+          },
+        },
+      ],
+    },
+    ProcessChaos: {
+      spec: {
+        process: {
+          field: 'text',
+          label: 'Process',
+          value: '',
+          helperText: 'The name or ID of the process to be killed',
+        },
+        signal: {
+          field: 'number',
+          label: 'Signal',
+          value: 9,
+          helperText: 'The process signal value',
+        },
+      },
+    },
+  }
 
 const data: Record<Kind, Target> = {
   // Pod Fault

@@ -65,6 +65,16 @@ export function parseSubmit(e: Experiment, env: Env = 'k8s') {
       case 'NetworkChaos':
         action = 'network'
         break
+      case 'DiskChaos':
+        action = values.target[_snakecase(kind)].action
+
+        if (action === 'fill') {
+          values.target[_snakecase(kind)].fill_by_fallocate = JSON.parse(
+            values.target[_snakecase(kind)].fill_by_fallocate
+          )
+        }
+
+        break
     }
     const addresses = values.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
     const expInfo = JSON.stringify(values.target[_snakecase(kind)])
@@ -290,6 +300,14 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
               case 'NetworkChaos':
                 action = 'network'
                 break
+              case 'DiskChaos':
+                action = experiment.target[spec].action
+
+                if (action === 'fill') {
+                  experiment.target[spec].fill_by_fallocate = JSON.parse(experiment.target[spec].fill_by_fallocate)
+                }
+
+                break
             }
             const addresses = basic.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
             const expInfo = JSON.stringify(
@@ -357,6 +375,14 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
                     break
                   case 'NetworkChaos':
                     action = 'network'
+                    break
+                  case 'DiskChaos':
+                    action = e.target[spec].action
+
+                    if (action === 'fill') {
+                      e.target[spec].fill_by_fallocate = JSON.parse(e.target[spec].fill_by_fallocate)
+                    }
+
                     break
                 }
                 const addresses = basic.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
