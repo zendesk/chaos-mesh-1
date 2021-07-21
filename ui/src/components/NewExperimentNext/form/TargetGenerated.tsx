@@ -106,7 +106,6 @@ const TargetGenerated: React.FC<TargetGeneratedProps> = ({ env, kind, data, vali
                 name={k}
                 label={v.label}
                 helperText={getIn(touched, k) && getIn(errors, k) ? getIn(errors, k) : v.helperText}
-                defaultValue={v.value}
                 error={getIn(errors, k) && getIn(touched, k) ? true : false}
               >
                 {v.items!.map((option: string) => (
