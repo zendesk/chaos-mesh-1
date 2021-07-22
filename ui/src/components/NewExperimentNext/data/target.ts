@@ -365,9 +365,18 @@ export const dataPhysic: Record<Extract<Kind, 'StressChaos' | 'NetworkChaos'> | 
             ...diskPyhsicCommon,
             fill_by_fallocate: {
               field: 'select',
-              items: ['true', 'false'],
+              items: [
+                {
+                  label: 'true',
+                  value: true,
+                },
+                {
+                  label: 'false',
+                  value: false,
+                },
+              ],
               label: 'Fill by fallocate',
-              value: 'true',
+              value: true,
               helperText: 'Whether to use fallocate to quickly request disk space',
             },
           },

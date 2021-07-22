@@ -57,25 +57,6 @@ export function parseSubmit(e: Experiment, env: Env = 'k8s') {
   const kind = values.target.kind
 
   if (env === 'physic') {
-    let action
-    switch (kind) {
-      case 'StressChaos':
-        action = 'stress'
-        break
-      case 'NetworkChaos':
-        action = 'network'
-        break
-      case 'DiskChaos':
-        action = values.target[_snakecase(kind)].action
-
-        if (action === 'fill') {
-          values.target[_snakecase(kind)].fill_by_fallocate = JSON.parse(
-            values.target[_snakecase(kind)].fill_by_fallocate
-          )
-        }
-
-        break
-    }
     const addresses = values.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
     const expInfo = JSON.stringify(values.target[_snakecase(kind)])
 
@@ -89,7 +70,7 @@ export function parseSubmit(e: Experiment, env: Env = 'k8s') {
         annotations: values.annotations,
       },
       spec: {
-        action,
+        action: kind.replace('Chaos', '').toLowerCase(),
         address: addresses,
         expInfo,
         duration: values.scheduler ? values.scheduler.duration || undefined : values.deadline,
@@ -292,23 +273,6 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
               },
             })
           } else {
-            let action
-            switch (kind) {
-              case 'StressChaos':
-                action = 'stress'
-                break
-              case 'NetworkChaos':
-                action = 'network'
-                break
-              case 'DiskChaos':
-                action = experiment.target[spec].action
-
-                if (action === 'fill') {
-                  experiment.target[spec].fill_by_fallocate = JSON.parse(experiment.target[spec].fill_by_fallocate)
-                }
-
-                break
-            }
             const addresses = basic.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
             const expInfo = JSON.stringify(
               Object.fromEntries(Object.entries(experiment.target[spec]).filter(([_, v]) => v != null && v !== ''))
@@ -319,7 +283,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
               templateType: 'PhysicalMachineChaos',
               deadline: experiment.basic.deadline,
               physicalmachineChaos: {
-                action,
+                action: kind.replace('Chaos', '').toLowerCase(),
                 address: addresses,
                 expInfo,
               },
@@ -368,23 +332,6 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
                   },
                 })
               } else {
-                let action
-                switch (kind) {
-                  case 'StressChaos':
-                    action = 'stress'
-                    break
-                  case 'NetworkChaos':
-                    action = 'network'
-                    break
-                  case 'DiskChaos':
-                    action = e.target[spec].action
-
-                    if (action === 'fill') {
-                      e.target[spec].fill_by_fallocate = JSON.parse(e.target[spec].fill_by_fallocate)
-                    }
-
-                    break
-                }
                 const addresses = basic.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
                 const expInfo = JSON.stringify(
                   Object.fromEntries(Object.entries(e.target[spec]).filter(([_, v]) => v != null && v !== ''))
@@ -395,7 +342,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
                   templateType: 'PhysicalMachineChaos',
                   deadline: e.basic.deadline,
                   physicalmachineChaos: {
-                    action,
+                    action: kind.replace('Chaos', '').toLowerCase(),
                     address: addresses,
                     expInfo,
                   },
