@@ -5,6 +5,7 @@ import { ReactComponent as DiskIcon } from 'images/chaos/disk.svg'
 import { ExperimentKind } from 'components/NewExperiment/types'
 import { ReactComponent as FileSystemIOIcon } from 'images/chaos/io.svg'
 import { ReactComponent as GCPIcon } from 'images/chaos/gcp.svg'
+import { ReactComponent as JavaIcon } from 'images/chaos/java.svg'
 import { ReactComponent as K8SIcon } from 'images/k8s.svg'
 import { ReactComponent as LinuxKernelIcon } from 'images/chaos/kernel.svg'
 import { ReactComponent as NetworkIcon } from 'images/chaos/network.svg'
@@ -16,7 +17,15 @@ import { SvgIcon } from '@material-ui/core'
 import T from 'components/T'
 
 export function iconByKind(
-  kind: ExperimentKind | 'PhysicalMachineChaos' | 'DiskChaos' | 'ProcessChaos' | 'Schedule' | 'k8s' | 'physic',
+  kind:
+    | ExperimentKind
+    | 'PhysicalMachineChaos'
+    | 'DiskChaos'
+    | 'ProcessChaos'
+    | 'JVMChaos'
+    | 'Schedule'
+    | 'k8s'
+    | 'physic',
   size: 'small' | 'large' = 'large'
 ) {
   let icon
@@ -62,6 +71,9 @@ export function iconByKind(
       break
     case 'ProcessChaos':
       icon = <ProcessIcon />
+      break
+    case 'JVMChaos':
+      icon = <JavaIcon />
       break
   }
 

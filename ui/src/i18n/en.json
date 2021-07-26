@@ -103,6 +103,9 @@
       },
       "process": {
         "title": "Process interruption"
+      },
+      "jvm": {
+        "title": "JVM Fault"
       }
     },
     "run": {

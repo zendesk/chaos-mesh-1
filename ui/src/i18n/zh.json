@@ -103,6 +103,9 @@
       },
       "process": {
         "title": "进程中断"
+      },
+      "jvm": {
+        "title": "JVM 故障"
       }
     },
     "run": {

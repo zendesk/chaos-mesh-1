@@ -1,4 +1,6 @@
 import { forwardRef, useImperativeHandle, useState } from 'react'
+import { setEnv, setExternalExperiment } from 'slices/experiments'
+import { toCamelCase, toTitleCase } from 'lib/utils'
 
 import { Box } from '@material-ui/core'
 import ByYAML from './ByYAML'
@@ -14,8 +16,6 @@ import TabList from '@material-ui/lab/TabList'
 import TabPanel from '@material-ui/lab/TabPanel'
 import _snakecase from 'lodash.snakecase'
 import { data as scheduleSpecificData } from 'components/Schedule/types'
-import { setExternalExperiment } from 'slices/experiments'
-import { toCamelCase } from 'lib/utils'
 import { useStoreDispatch } from 'store'
 import { yamlToExperiment } from 'lib/formikhelpers'
 
@@ -51,18 +51,82 @@ const NewExperiment: React.ForwardRefRenderFunction<NewExperimentHandles, NewExp
   const fillExperiment = (original: any) => {
     if (original.kind === 'Schedule') {
       const kind = original.spec.type
-      const data = yamlToExperiment({
-        kind,
-        metadata: original.metadata,
-        spec: original.spec[toCamelCase(kind)],
-      })
-      delete original.spec[toCamelCase(kind)]
 
+      if (kind === 'PhysicalMachineChaos') {
+        const spec = original.spec['physicalmachineChaos']
+        delete original.spec['physicalmachineChaos']
+        const kind = spec.action === 'jvm' ? 'JVMChaos' : toTitleCase(spec.action) + 'Chaos'
+        const expInfo = JSON.parse(spec.expInfo)
+
+        dispatch(setEnv('physic'))
+        dispatch(
+          setExternalExperiment({
+            kindAction: [kind, expInfo.action],
+            basic: {
+              ...original.metadata,
+              ...scheduleSpecificData,
+              schedule: original.spec.schedule,
+              starting_deadline_seconds: original.spec.startingDeadlineSeconds,
+              concurrency_policy: original.spec.concurrencyPolicy,
+              history_limit: original.spec.historyLimit,
+              scope: {
+                addresses: spec.address.split(','),
+              },
+              scheduler: {
+                duration: spec.duration,
+              },
+            },
+            target: {
+              kind,
+              [_snakecase(kind)]: expInfo,
+            },
+          })
+        )
+      } else {
+        const data = yamlToExperiment({
+          kind,
+          metadata: original.metadata,
+          spec: original.spec[toCamelCase(kind)],
+        })
+        delete original.spec[toCamelCase(kind)]
+
+        dispatch(setEnv('k8s'))
+        dispatch(
+          setExternalExperiment({
+            kindAction: [kind, data.target[_snakecase(kind)].action ?? ''],
+            target: data.target,
+            basic: { ...data.basic, ...scheduleSpecificData, ...original.spec },
+          })
+        )
+      }
+
+      setPanel('initial')
+
+      return
+    }
+
+    if (original.kind === 'PhysicalMachineChaos') {
+      const spec = original.spec
+      const kind = spec.action === 'jvm' ? 'JVMChaos' : toTitleCase(spec.action) + 'Chaos'
+      const expInfo = JSON.parse(spec.expInfo)
+
+      dispatch(setEnv('physic'))
       dispatch(
         setExternalExperiment({
-          kindAction: [kind, data.target[_snakecase(kind)].action ?? ''],
-          target: data.target,
-          basic: { ...data.basic, ...scheduleSpecificData, ...original.spec },
+          kindAction: [kind, expInfo.action],
+          basic: {
+            ...original.metadata,
+            scope: {
+              addresses: spec.address.split(','),
+            },
+            scheduler: {
+              duration: spec.duration,
+            },
+          },
+          target: {
+            kind,
+            [_snakecase(kind)]: expInfo,
+          },
         })
       )
 
@@ -75,6 +139,7 @@ const NewExperiment: React.ForwardRefRenderFunction<NewExperimentHandles, NewExp
 
     const kind = data.target.kind
 
+    dispatch(setEnv('k8s'))
     dispatch(
       setExternalExperiment({
         kindAction: [kind, data.target[_snakecase(kind)].action ?? ''],

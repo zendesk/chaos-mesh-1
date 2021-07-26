@@ -57,7 +57,7 @@ export function parseSubmit(e: Experiment, env: Env = 'k8s') {
   const kind = values.target.kind
 
   if (env === 'physic') {
-    const addresses = values.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
+    const addresses = values.scope.addresses.join(',')
     const expInfo = JSON.stringify(values.target[_snakecase(kind)])
 
     return {
@@ -273,7 +273,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
               },
             })
           } else {
-            const addresses = basic.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
+            const addresses = basic.scope.addresses.join(',')
             const expInfo = JSON.stringify(
               Object.fromEntries(Object.entries(experiment.target[spec]).filter(([_, v]) => v != null && v !== ''))
             )
@@ -332,7 +332,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
                   },
                 })
               } else {
-                const addresses = basic.scope.addresses.map((d: string) => d.split(': ')[1]).join(',')
+                const addresses = basic.scope.addresses.join(',')
                 const expInfo = JSON.stringify(
                   Object.fromEntries(Object.entries(e.target[spec]).filter(([_, v]) => v != null && v !== ''))
                 )
