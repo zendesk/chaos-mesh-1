@@ -9,6 +9,14 @@ import basic from 'components/NewExperimentNext/data/basic'
 import snakeCaseKeys from 'snakecase-keys'
 import yaml from 'js-yaml'
 
+function fromEntries(entries: [string, unknown][]) {
+  return entries.reduce((acc, d) => {
+    acc[d[0]] = d[1]
+
+    return acc
+  }, {} as any)
+}
+
 export function parseSubmit(e: Experiment, env: Env = 'k8s') {
   const values = JSON.parse(JSON.stringify(e))
 
@@ -275,7 +283,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
           } else {
             const addresses = basic.scope.addresses.join(',')
             const expInfo = JSON.stringify(
-              Object.fromEntries(Object.entries(experiment.target[spec]).filter(([_, v]) => v != null && v !== ''))
+              fromEntries(Object.entries(experiment.target[spec]).filter(([_, v]) => v != null && v !== ''))
             )
 
             pushTemplate({
@@ -334,7 +342,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
               } else {
                 const addresses = basic.scope.addresses.join(',')
                 const expInfo = JSON.stringify(
-                  Object.fromEntries(Object.entries(e.target[spec]).filter(([_, v]) => v != null && v !== ''))
+                  fromEntries(Object.entries(e.target[spec]).filter(([_, v]) => v != null && v !== ''))
                 )
 
                 pushTemplate({
