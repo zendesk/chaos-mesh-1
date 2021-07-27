@@ -38,6 +38,9 @@ const (
 
 	// ProcessAction represents attack the process on the physical machine.
 	ProcessAction PhysicalMachineChaosAction = "process"
+
+	// JVMAction represents attack JVM on the physical machine.
+	JVMAction PhysicalMachineChaosAction = "jvm"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -61,7 +64,7 @@ type PhysicalMachineChaos struct {
 
 // PhysicalMachineChaosSpec defines the desired state of PhysicalMachineChaos
 type PhysicalMachineChaosSpec struct {
-	// +kubebuilder:validation:Enum=stress;network;disk;host;process
+	// +kubebuilder:validation:Enum=stress;network;disk;host;process;jvm
 	Action PhysicalMachineChaosAction `json:"action"`
 
 	PhysicalMachineSelector `json:",inline"`

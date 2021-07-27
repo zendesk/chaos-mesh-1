@@ -44,7 +44,6 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	addressArray := strings.Split(addresses, ",")
 
 	for _, address := range addressArray {
-
 		url := fmt.Sprintf("%s/api/attack/%s", address, physicalMachinechaos.Spec.Action)
 
 		var objmap map[string]interface{}
@@ -102,10 +101,6 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	addressArray := strings.Split(addresses, ",")
 	// TODO: do this in goroutine
 	for _, address := range addressArray {
-		if !strings.HasPrefix(address, "http") {
-			address = fmt.Sprintf("http://%s", address)
-		}
-
 		url := fmt.Sprintf("%s/api/attack/%s", address, physicalMachinechaos.Spec.UID)
 
 		req, err := http.NewRequest("DELETE", url, nil)

@@ -4572,6 +4572,7 @@ spec:
                   - disk
                   - host
                   - process
+                  - jvm
                   type: string
                 address:
                   type: string
@@ -6645,6 +6646,7 @@ spec:
                             - disk
                             - host
                             - process
+                            - jvm
                             type: string
                           address:
                             type: string
@@ -8406,6 +8408,7 @@ spec:
                                 - disk
                                 - host
                                 - process
+                                - jvm
                                 type: string
                               address:
                                 type: string
@@ -13937,6 +13940,7 @@ spec:
                   - disk
                   - host
                   - process
+                  - jvm
                   type: string
                 address:
                   type: string
@@ -15591,6 +15595,7 @@ spec:
                       - disk
                       - host
                       - process
+                      - jvm
                       type: string
                     address:
                       type: string
@@ -17711,6 +17716,7 @@ spec:
                                 - disk
                                 - host
                                 - process
+                                - jvm
                                 type: string
                               address:
                                 type: string
@@ -19535,6 +19541,7 @@ spec:
                                     - disk
                                     - host
                                     - process
+                                    - jvm
                                     type: string
                                   address:
                                     type: string
@@ -27420,6 +27427,7 @@ spec:
                         - disk
                         - host
                         - process
+                        - jvm
                         type: string
                       address:
                         type: string
@@ -29135,6 +29143,7 @@ spec:
                             - disk
                             - host
                             - process
+                            - jvm
                             type: string
                           address:
                             type: string

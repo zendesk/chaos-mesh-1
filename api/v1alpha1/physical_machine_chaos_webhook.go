@@ -16,6 +16,7 @@ package v1alpha1
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/google/uuid"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -41,6 +42,15 @@ func (in *PhysicalMachineChaosSpec) Default() {
 	if len(in.UID) == 0 {
 		in.UID = uuid.New().String()
 	}
+
+	// add http prefix for address
+	addressArray := strings.Split(in.Address, ",")
+	for i := range addressArray {
+		if !strings.HasPrefix(addressArray[i], "http") {
+			addressArray[i] = fmt.Sprintf("http://%s", addressArray[i])
+		}
+	}
+	in.Address = strings.Join(addressArray, ",")
 }
 
 // +kubebuilder:webhook:verbs=create;update,path=/validate-chaos-mesh-org-v1alpha1-physicalmachinechaos,mutating=false,failurePolicy=fail,groups=chaos-mesh.org,resources=physicalmachinechaos,versions=v1alpha1,name=vphysicalmachinechaos.kb.io
