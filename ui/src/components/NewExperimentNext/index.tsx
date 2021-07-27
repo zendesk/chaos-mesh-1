@@ -49,6 +49,10 @@ const NewExperiment: React.ForwardRefRenderFunction<NewExperimentHandles, NewExp
   }
 
   const fillExperiment = (original: any) => {
+    function selectorsToArr(selectors: Object, separator: string) {
+      return Object.entries(selectors).map(([key, val]) => `${key}${separator}${val}`)
+    }
+
     if (original.kind === 'Schedule') {
       const kind = original.spec.type
 
@@ -64,6 +68,8 @@ const NewExperiment: React.ForwardRefRenderFunction<NewExperimentHandles, NewExp
             kindAction: [kind, expInfo.action],
             basic: {
               ...original.metadata,
+              labels: original.metadata.labels ? selectorsToArr(original.metadata.labels, ':') : [],
+              annotations: original.metadata.annotations ? selectorsToArr(original.metadata.annotations, ':') : [],
               ...scheduleSpecificData,
               schedule: original.spec.schedule,
               starting_deadline_seconds: original.spec.startingDeadlineSeconds,
@@ -116,6 +122,8 @@ const NewExperiment: React.ForwardRefRenderFunction<NewExperimentHandles, NewExp
           kindAction: [kind, expInfo.action],
           basic: {
             ...original.metadata,
+            labels: original.metadata.labels ? selectorsToArr(original.metadata.labels, ':') : [],
+            annotations: original.metadata.annotations ? selectorsToArr(original.metadata.annotations, ':') : [],
             scope: {
               addresses: spec.address.split(','),
             },
