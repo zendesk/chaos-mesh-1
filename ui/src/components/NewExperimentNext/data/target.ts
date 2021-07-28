@@ -208,15 +208,15 @@ const networkPhysicCommon: Spec = {
   },
   sourceport: {
     field: 'text',
-    label: 'Egress Port',
-    value: '',
-    helperText: 'The egress port, split by ,',
-  },
-  egressport: {
-    field: 'text',
     label: 'Source Port',
     value: '',
     helperText: 'The source port, split by ,',
+  },
+  egressport: {
+    field: 'text',
+    label: 'Egress Port',
+    value: '',
+    helperText: 'The egress port, split by ,',
   },
   percent: {
     field: 'text',
