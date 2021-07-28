@@ -66,7 +66,7 @@ export function parseSubmit(e: Experiment, env: Env = 'k8s') {
 
   if (env === 'physic') {
     const addresses = values.scope.addresses.join(',')
-    const expInfo = JSON.stringify(values.target[_snakecase(kind)], replacer).replaceAll('\\n', '\n')
+    const expInfo = JSON.stringify(values.target[_snakecase(kind)], replacer)
 
     return {
       apiVersion: 'chaos-mesh.org/v1alpha1',
@@ -282,7 +282,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
             })
           } else {
             const addresses = basic.scope.addresses.join(',')
-            const expInfo = JSON.stringify(experiment.target[spec], replacer).replaceAll('\\n', '\n')
+            const expInfo = JSON.stringify(experiment.target[spec], replacer)
 
             pushTemplate({
               name: t.name,
@@ -339,7 +339,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
                 })
               } else {
                 const addresses = basic.scope.addresses.join(',')
-                const expInfo = JSON.stringify(e.target[spec], replacer).replaceAll('\\n', '\n')
+                const expInfo = JSON.stringify(e.target[spec], replacer)
 
                 pushTemplate({
                   name,
