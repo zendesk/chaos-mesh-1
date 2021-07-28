@@ -3,7 +3,7 @@ import * as Yup from 'yup'
 import { ExperimentKind } from 'components/NewExperiment/types'
 
 export type Kind = ExperimentKind
-type FieldType = 'text' | 'number' | 'select' | 'label' | 'autocomplete'
+type FieldType = 'text' | 'textarea' | 'number' | 'select' | 'label' | 'autocomplete'
 interface SpecField {
   field: FieldType
   items?: any[]
@@ -512,7 +512,7 @@ export const dataPhysic: Record<
         key: 'rule-data',
         spec: {
           'rule-data': {
-            field: 'text',
+            field: 'textarea',
             label: 'Rule',
             value: '',
             helperText: 'byteman rule configuration',

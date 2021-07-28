@@ -9,12 +9,12 @@ import basic from 'components/NewExperimentNext/data/basic'
 import snakeCaseKeys from 'snakecase-keys'
 import yaml from 'js-yaml'
 
-function fromEntries(entries: [string, unknown][]) {
-  return entries.reduce((acc, d) => {
-    acc[d[0]] = d[1]
+function replacer(_: string, v: any) {
+  if (v === null || v === '') {
+    return undefined
+  }
 
-    return acc
-  }, {} as any)
+  return v
 }
 
 export function parseSubmit(e: Experiment, env: Env = 'k8s') {
@@ -66,7 +66,7 @@ export function parseSubmit(e: Experiment, env: Env = 'k8s') {
 
   if (env === 'physic') {
     const addresses = values.scope.addresses.join(',')
-    const expInfo = JSON.stringify(values.target[_snakecase(kind)])
+    const expInfo = JSON.stringify(values.target[_snakecase(kind)], replacer).replaceAll('\\n', '\n')
 
     return {
       apiVersion: 'chaos-mesh.org/v1alpha1',
@@ -282,9 +282,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
             })
           } else {
             const addresses = basic.scope.addresses.join(',')
-            const expInfo = JSON.stringify(
-              fromEntries(Object.entries(experiment.target[spec]).filter(([_, v]) => v != null && v !== ''))
-            )
+            const expInfo = JSON.stringify(experiment.target[spec], replacer).replaceAll('\\n', '\n')
 
             pushTemplate({
               name: t.name,
@@ -341,9 +339,7 @@ export function constructWorkflow(env: Env, basic: WorkflowBasic, templates: Tem
                 })
               } else {
                 const addresses = basic.scope.addresses.join(',')
-                const expInfo = JSON.stringify(
-                  fromEntries(Object.entries(e.target[spec]).filter(([_, v]) => v != null && v !== ''))
-                )
+                const expInfo = JSON.stringify(e.target[spec], replacer).replaceAll('\\n', '\n')
 
                 pushTemplate({
                   name,
