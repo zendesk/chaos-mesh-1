@@ -88,11 +88,17 @@ const ObjectConfiguration: React.FC<ObjectConfigurationProps> = ({
           {T('newE.steps.scope')}
         </Typography>
 
-        {(inNode ? (config as any).templateType : (config.kind as any)) !== 'PhysicalMachineChaos' && (
-          <Selector data={experiment.selector} />
-        )}
+        {(inNode
+          ? (config as any).templateType !== 'physicalmachineChaos'
+          : inSchedule
+          ? spec.type !== 'PhysicalMachineChaos'
+          : (config.kind as any) !== 'PhysicalMachineChaos') && <Selector data={experiment.selector} />}
 
-        {(inNode ? (config as any).templateType : (config.kind as any)) === 'PhysicalMachineChaos' && (
+        {(inNode
+          ? (config as any).templateType === 'physicalmachineChaos'
+          : inSchedule
+          ? spec.type === 'PhysicalMachineChaos'
+          : (config.kind as any) === 'PhysicalMachineChaos') && (
           <Table>
             <TableRow>
               <TableCell>{T('physic.address')}</TableCell>
